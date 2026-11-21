@@ -60,7 +60,6 @@ G.upgrade = id => {
   if (u.max && s.up[id] >= u.max) return;
   if (s.money < cost) return G.toast('돈이 모자라요');
   s.up[id]++; G.earn(-cost);
-  if (id === 'expand' && s.phase === 'day') { s.left++; if (!s.cust) G.newCustomer(); }
   G.save(); G.render();
 };
 

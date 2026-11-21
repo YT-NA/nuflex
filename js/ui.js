@@ -6,7 +6,7 @@ G.fmt = n => Math.round(n).toLocaleString('ko-KR') + '만';
 G.rand = arr => arr[Math.floor(Math.random() * arr.length)];
 G.country = id => G.COUNTRIES.find(c => c.id === id);
 
-const FLOW = ['nego', 'drop', 'pay', 'success', 'fail', 'launch'];   // 작전 중 화면 (뒤로·탭 막음)
+const FLOW = ['nego', 'drop', 'pay', 'success', 'fail', 'launch', 'tour'];   // 작전 중 화면 (뒤로·탭 막음)
 
 G.go = name => {
   if (name !== G.screen) history.pushState({ s: name }, '');

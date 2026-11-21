@@ -24,7 +24,18 @@ G.GUESTS = [
   { lv: 7, name: '임금님',      icon: '🤴', n: 1,  mul: 45 },
   { lv: 8, name: '외계 대사',   icon: '👽', n: 1,  mul: 90 },
 ];
-G.CUSTOMERS_PER_DAY = 3;
+G.CUSTOMERS_PER_DAY = 1;      // 하루 손님 한 팀 (밤 작전도 하나)
+// 여행지에서 권하는 패키지. frac = 그 여행 값의 몇 배를 받는가
+G.PACKS = [
+  { id: 'hotel',  icon: '🏨', name: '호텔',     frac: 0.30 },
+  { id: 'water',  icon: '🤿', name: '물놀이',   frac: 0.20 },
+  { id: 'food',   icon: '🍜', name: '맛집',     frac: 0.20 },
+  { id: 'guide',  icon: '🧭', name: '가이드',   frac: 0.15 },
+  { id: 'photo',  icon: '📸', name: '사진',     frac: 0.10 },
+  { id: 'spa',    icon: '♨️', name: '온천',     frac: 0.25 },
+  { id: 'ride',   icon: '🎢', name: '놀이기구', frac: 0.25 },
+  { id: 'gift',   icon: '🛍', name: '기념품',   frac: 0.35 },
+];
 G.CUSTOMER_COLORS = ['#4aa3ff', '#ff6b8b', '#38c172', '#b57bff', '#ffb02e', '#20c4c4'];
 
 // 밤 의뢰 — 작전을 성공할수록 급(t)이 올라 표적이 커진다: 동네 → 마을 → 도시 → 명소 → 나라 → 행성
@@ -60,7 +71,7 @@ G.SUBTITLE = '당신의 안마당에<br>핵무기를 배달해 드립니다.';
 // 연구소 — 낮 사업(여행사)과 밤 사업(무기)을 따로 키운다. 값은 단계마다 ×1.5
 G.UPGRADES = [
   { id: 'talk',   side: 'day',   name: '말솜씨',      icon: '🗣', base: 200, effect: '여행 수익 +10%' },
-  { id: 'expand', side: 'day',   name: '가게 확장',   icon: '🏬', base: 400, effect: '하루 손님 +1', max: 3 },
+  { id: 'expand', side: 'day',   name: '가게 확장',   icon: '🏬', base: 400, effect: '여행 수익 +20%', max: 3 },
   { id: 'truck',  side: 'night', name: '트럭 개조',   icon: '🚚', base: 250, effect: '운송비 −15만', max: 6 },
   { id: 'net',    side: 'night', name: '암시장 인맥', icon: '🕶', base: 350, effect: '의뢰 대금 +10%' },
   { id: 'sign',   side: 'night', name: '변장술',      icon: '🥸', base: 300, effect: '의심 −10%', max: 8 },

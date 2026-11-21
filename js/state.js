@@ -35,7 +35,9 @@ G.load = async () => {
   G.s.stage = G.s.stage || 0; G.s.wp = G.s.wp || 0;
   if (G.s.mission && G.s.mission.stage == null) { G.s.mission = null; if (G.s.phase === 'night' && !G.s.opDone) G.needMission = true; }
   G.s.look = Object.assign(fresh.look, G.s.look); G.s.own = G.s.own || {};
-  if (G.s.cust && G.s.cust.g == null) G.s.cust = null;                       // 예전 저장의 손님은 버린다
+  if (G.s.cust && G.s.cust.g == null) G.s.cust = null;
+  if (G.s.phase === 'day' && G.s.left > G.CUSTOMERS_PER_DAY) G.s.left = G.CUSTOMERS_PER_DAY;
+  G.s.tour = null;                       // 예전 저장의 손님은 버린다
   if (G.s.mission && !G.CLIENTS[G.s.mission.client]) G.s.mission.client = 0;
   G.s.shroom = G.s.shroom || 'button'; G.s.shrooms = Object.assign({ button: true, fire: true }, G.s.shrooms);
   if (G.s.mission && !G.CLIENTS[G.s.mission.client]) G.s.mission.client = 0;

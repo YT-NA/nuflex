@@ -290,3 +290,22 @@ body:not(.night) #crushmsg { color:#fff; }
 .drop .row.head .tag { font-size:11px; padding:5px 8px; }
 .rankup { color:var(--acc); font-size:18px !important; }
 .plea small + small { font-weight:700; opacity:.8; font-size:12px; }
+
+/* ── 여행지 안내(패키지 권하기) ── */
+.spot2 { flex:1; min-height:0; position:relative; margin:0 8px; border-radius:16px; border:3px solid var(--line); background:linear-gradient(var(--sky1),var(--sky2)); overflow:hidden; }
+.bgicon { position:absolute; left:50%; top:46%; transform:translate(-50%,-50%); font-size:210px; opacity:.28; line-height:1; }
+.mood { position:absolute; left:12px; right:12px; top:10px; height:14px; border-radius:7px; background:#0003; border:2px solid var(--line); overflow:hidden; }
+.mood i { display:block; height:100%; background:linear-gradient(90deg,#ff4b4b,#ffd23d,#38c172); background-size:calc(100vw - 60px) 100%; transition:width .25s; }
+.tguest { position:absolute; left:50%; bottom:8%; transform:translateX(-62%); display:flex; flex-direction:column; align-items:center; }
+.tguest .face { font-size:110px; line-height:1.05; }
+.tguest .bubble { font-size:15px; padding:8px 12px; }
+.tguest .xn { top:auto; bottom:6px; right:-30px; }
+.pop2 { animation:pop2 .28s cubic-bezier(.2,1.8,.4,1); }
+@keyframes pop2 { from { transform:translateX(-62%) scale(.7) rotate(-6deg); } }
+.tme { position:absolute; right:5%; bottom:4%; width:20%; }
+.packs { flex:none; display:grid; grid-template-columns:repeat(4,1fr); gap:6px; margin:8px 8px 0; }
+.pack { position:relative; min-height:64px; padding:3px 2px; border-radius:14px; background:var(--panel); border:2px solid var(--line); box-shadow:0 3px 0 var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center; line-height:1.15; }
+.pack:active { transform:translateY(3px); box-shadow:none; }
+.pack span { font-size:24px; } .pack b { font-size:11px; } .pack i { font-size:10px; font-style:normal; font-weight:700; color:var(--soft); }
+.pack.poor { opacity:.5; }
+.mk { top:2px; right:4px; width:auto; height:auto; border:0; background:none; font-size:13px; font-style:normal; font-weight:900; color:#ff4b6b; }

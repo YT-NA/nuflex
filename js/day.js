@@ -7,7 +7,7 @@ G.screens.home = () => {
     .map(([id, ic, nm]) => `<button onclick="G.side('${id}')"><span>${ic}</span>${nm}${G.sideBadge(id) ? '<em></em>' : ''}</button>`).join('');
   let cta, bubble;
   if (!night) {
-    if (s.left > 0) { cta = `<button class="cta" onclick="G.go('counsel')">🙋 손님 ${s.left}팀 · 상담하기</button>`; bubble = '어서 오세요!'; }
+    if (s.left > 0) { cta = `<button class="cta" onclick="G.go('counsel')">🙋 오늘의 손님 · 상담하기</button>`; bubble = '어서 오세요!'; }
     else { cta = `<button class="cta" onclick="G.closeShop()">🌙 가게 닫기</button>`; bubble = '오늘 장사 끝!'; }
   } else if (!s.opDone) { cta = `<button class="cta" onclick="G.go('ops')">☢️ 오늘 밤 작전</button>`; bubble = '이제 진짜 일…'; }
   else { cta = `<button class="cta" onclick="G.morning()">☀️ 아침 맞기</button>`; bubble = '졸려…'; }
@@ -39,13 +39,14 @@ G.closeShop = () => {
 
 // ── 손님: 여행사가 클수록 단체·높은 사람이 온다 ──
 G.agencyLv = () => Math.min(G.GUESTS[G.GUESTS.length - 1].lv, 1 + G.s.up.expand + Math.floor(G.s.fame / 40));
-G.dayCustomers = () => G.CUSTOMERS_PER_DAY + G.s.up.expand;
+G.dayCustomers = () => G.CUSTOMERS_PER_DAY;        // 하루 한 팀 (밤 작전도 하루 하나)
 
 G.newCustomer = () => {
   const s = G.s, lv = G.agencyLv();
   const pool = G.GUESTS.map((g, i) => i).filter(i => G.GUESTS[i].lv <= lv);
   const gi = Math.random() < 0.6 ? G.rand(pool.slice(-3)) : G.rand(pool);     // 새로 온 급이 더 자주
-  s.cust = { g: gi, name: G.GUESTS[gi].name, color: G.rand(G.CUSTOMER_COLORS), want: G.rand(G.COUNTRIES).id };
+  const ids = G.PACKS.map(p => p.id).sort(() => Math.random() - 0.5);      // 좋아하는 것 2, 싫어하는 것 2 (숨김)
+  s.cust = { g: gi, name: G.GUESTS[gi].name, color: G.rand(G.CUSTOMER_COLORS), want: G.rand(G.COUNTRIES).id, likes: ids.slice(0, 2), hates: ids.slice(2, 4) };
   s.pick = { dest: null };
 };
 
@@ -54,7 +55,7 @@ G.wheelSlots = () => { const open = G.COUNTRIES.filter(c => G.s.routes[c.id]); r
 
 G.tripPay = destId => {
   const s = G.s, g = G.GUESTS[s.cust.g];
-  return Math.round(G.country(destId).pay * g.mul * (1 + s.up.talk * 0.1 + (s.decor.neon ? 0.1 : 0)));
+  return Math.round(G.country(destId).pay * g.mul * (1 + s.up.talk * 0.1 + s.up.expand * 0.2 + (s.decor.neon ? 0.1 : 0)));
 };
 
 // ── 상담실: 원하는 대로 해 준다고 하고, 아무 데나 골라 보낸다 ──
@@ -187,18 +188,68 @@ G.fire = p => {
   });
 };
 
+// 착지하면 여행지에서 패키지 안내로 넘어간다 (전원 풍덩이면 바로 정산)
 G.landed = r => {
-  const s = G.s, c = s.cust, g = G.GUESTS[c.g], match = s.pick.dest === c.want;
-  const pay = Math.round(G.tripPay(s.pick.dest) * (0.5 + 0.5 * r)), tip = (r >= 1 ? Math.round(pay * 0.2) : 0) + (s.decor.balloon ? 20 : 0);
-  const fame = Math.round((match ? 2 : 1) * (1 + r)) + (s.decor.plant ? 1 : 0), heat = Math.round(2 + 2 * r);
-  s.fame += fame; s.heat = Math.max(0, s.heat - heat); s.stats.served++; s.left--;
-  s.cust = null;
+  const s = G.s, c = s.cust, match = s.pick.dest === c.want, pay = G.tripPay(s.pick.dest);
+  s.tour = { r, mood: r <= 0 ? 1 : match ? 6 : 4, wallet: pay, spent: 0, n: 0, last: null, seen: {},
+    face: r <= 0 ? '🥶' : match ? '😊' : '🤨', say: r <= 0 ? '어푸어푸…' : match ? '딱 원하던 곳이에요!' : '여긴… 어디죠?' };
+  if (r <= 0) return G.tourEnd();
+  G.save(); G.go('tour');
+};
+
+// ── 여행지 안내: 아래 패키지를 마구 권한다. 권할 때마다 손님 표정이 바뀐다 ──
+G.packPrice = p => Math.max(5, Math.round(G.tripPay(G.s.pick.dest) * p.frac / 5) * 5);
+G.screens.tour = () => {
+  const s = G.s, c = s.cust, g = G.GUESTS[c.g], t = s.tour, place = G.country(s.pick.dest);
+  const packs = G.PACKS.map(p => {
+    const price = G.packPrice(p), seen = t.seen[p.id];
+    return `<button class="pack ${price > t.wallet ? 'poor' : ''}" onclick="G.offer('${p.id}')">${seen ? `<em class="mk">${seen}</em>` : ''}<span>${p.icon}</span><b>${p.name}</b><i>${G.fmt(price)}</i></button>`;
+  }).join('');
+  return `<div class="tour">
+    <div class="row head"><span class="tag">${place.icon} ${place.name} · ${g.name}${g.n > 1 ? ' ×' + g.n : ''}</span><span class="tag">👛 ${G.fmt(t.wallet)}</span></div>
+    <div class="spot2"><div class="bgicon">${place.icon}</div>
+      <div class="mood"><i style="width:${t.mood * 10}%"></i></div>
+      <div class="tguest" id="tguest"><div class="bubble">${t.say}</div><div class="face">${t.face}</div>${g.n > 1 ? `<em class="xn">×${g.n}</em>` : ''}</div>
+      <div class="tme">${G.art.hero(false)}</div>
+    </div>
+    <div class="packs">${packs}</div>
+    <button class="cta in" onclick="G.tourEnd()">🏠 여행 끝 · +${G.fmt(t.spent)}</button>
+  </div>`;
+};
+
+G.offer = id => {
+  const s = G.s, c = s.cust, t = s.tour, p = G.PACKS.find(x => x.id === id), price = G.packPrice(p);
+  const R = (faces, says, d, mk) => { t.face = G.rand(faces); t.say = G.rand(says); t.mood = Math.max(0, Math.min(10, t.mood + d)); if (mk) t.seen[id] = mk; };
+  if (price > t.wallet) { R(['😭', '🥺'], ['돈이 없어요…', '지갑이 텅…'], -1); G.snd.play('bad'); }
+  else {
+    t.wallet -= price; t.spent += price; t.n++;
+    const again = t.last === id;
+    if (again) { R(['🥱', '😑', '🤢'], ['또요…?', '그만 좀…', '질려요'], -2); G.snd.play('bad'); }
+    else if ((c.likes || []).includes(id)) { R(['😍', '🤩', '🥰', '😆'], ['최고예요!', '이거예요 이거!', '또 올래요!'], 2, '♥'); G.snd.play('good'); }
+    else if ((c.hates || []).includes(id)) { R(['😡', '🤮', '😤', '😱'], ['이게 뭐예요!', '환불해 줘요!', '으악!'], -2, '✖'); G.snd.play('bad'); }
+    else { R(['🙂', '😊', '😐', '🤔'], ['음, 괜찮네요', '나쁘지 않아요', '그냥 그래요'], 0, '·'); G.snd.play('coin'); }
+    t.last = id; G.pop('+' + G.fmt(price));
+  }
+  G.save(); G.render();
+  G.snd.talk(t.mood >= 6 ? 700 : 300);
+  if (t.mood <= 0) { G.toast('😡 손님이 화나서 가 버려요!'); return setTimeout(() => { if (G.screen === 'tour') G.tourEnd(); }, 900); }
+  const el = $('tguest'); if (el) { el.classList.remove('pop2'); void el.offsetWidth; el.classList.add('pop2'); }
+};
+
+G.tourEnd = () => {
+  const s = G.s, c = s.cust, g = G.GUESTS[c.g], t = s.tour, match = s.pick.dest === c.want;
+  const base = Math.round(G.tripPay(s.pick.dest) * (0.5 + 0.5 * t.r)), sum = base + t.spent;
+  const tip = (t.mood >= 8 ? Math.round(sum * 0.2) : 0) + (s.decor.balloon ? 20 : 0), angry = t.mood <= 0;
+  const fame = angry ? -2 : Math.round(t.mood / 3) + (match ? 1 : 0) + (s.decor.plant ? 1 : 0), heat = angry ? 0 : Math.round(t.mood / 3);
+  s.fame = Math.max(0, s.fame + fame); s.heat = Math.max(0, s.heat - heat); s.stats.served++; s.left--;
+  const face = t.face;
+  s.cust = null; s.tour = null;
   if (s.left > 0) G.newCustomer();
   G.screen = 'counsel'; history.pushState({ s: 'counsel' }, '');
-  G.earn(pay + tip); G.save(); G.render();
-  const face = r < 0.5 ? '🥶' : match ? '😍' : '🤨', say = r < 0.5 ? '어푸어푸… 살려 줘요!' : match ? '딱 원하던 곳이에요!' : '여긴… 어디죠?';
-  G.sheet(`<div class="result"><div class="big">${face}</div><h3>${g.name}</h3><p>"${say}"</p>
-    <p>💰 +${G.fmt(pay + tip)}${tip ? ' (팁 포함)' : ''} · ⭐ +${fame} · 🚨 −${heat}</p>
+  G.earn(sum + tip); G.save(); G.render();
+  G.sheet(`<div class="result"><div class="big">${face}</div><h3>${g.name}</h3>
+    <p>발사 ${G.fmt(base)} + 패키지 ${G.fmt(t.spent)}${tip ? ' + 팁 ' + G.fmt(tip) : ''}</p>
+    <p>💰 +${G.fmt(sum + tip)} · ⭐ ${fame >= 0 ? '+' : ''}${fame} · 🚨 −${heat}</p>
     <button class="cta in" onclick="G.closeSheet()">${s.left > 0 ? '다음 손님 ▶' : '확인'}</button></div>`);
 };
 
