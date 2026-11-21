@@ -276,3 +276,17 @@ body:not(.night) #crushmsg { color:#fff; }
 .counsel .room2 { height:186px; }
 .guest2 { bottom:4%; } .guest2 .fig { width:42%; } .me2 .p { width:50%; } .me2 { bottom:3%; }
 .room2 .bubble { font-size:12px; padding:5px 8px; margin-bottom:4px; }
+
+/* ── 무기 사다리·단계 ── */
+.wpic { font-size:130px; line-height:1; animation:bob 3s ease-in-out infinite; }
+.armory .count { right:8%; top:6%; font-size:18px; }
+.ladder { position:absolute; left:0; right:0; bottom:2px; display:flex; justify-content:center; gap:4px; }
+.ladder span { width:34px; height:34px; border-radius:50%; background:var(--panel); border:2px solid var(--line); display:flex; align-items:center; justify-content:center; font-size:17px; opacity:.55; }
+.ladder span.past { opacity:.9; } .ladder span.on { opacity:1; background:var(--acc); transform:scale(1.2); }
+.armory .mark { bottom:42px; width:64px; }
+.armory .uprow { margin-bottom:6px; padding:6px 10px; }
+.warn { flex:none; margin:6px 14px 0; padding:6px 10px; border-radius:12px; background:#ff4b4b33; border:2px solid #ff4b4b; font-size:12px; font-weight:700; text-align:center; }
+.bar.noz { height:14px; margin-top:10px; } .bar.noz #mark { top:-8px; bottom:-8px; }
+.drop .row.head .tag { font-size:11px; padding:5px 8px; }
+.rankup { color:var(--acc); font-size:18px !important; }
+.plea small + small { font-weight:700; opacity:.8; font-size:12px; }

@@ -6,17 +6,31 @@ G.upRow = (icon, name, lv, cost, effect, fn) => `<div class="uprow"><span class=
     <button class="${G.s.money >= cost ? '' : 'off'}" onclick="${fn}">${G.fmt(cost)}<small>→ ${effect}</small></button></div>`;
 
 // ── 무기고: 핵만 키운다 ──
-G.nukeLv = () => G.s.up.power + G.s.up.range;
 G.screens.armory = () => {
-  const s = G.s, lv = G.nukeLv(), name = G.NUKE_NAMES[Math.min(G.NUKE_NAMES.length - 1, Math.floor(lv / 2))];
-  const scale = Math.min(1, 0.55 + lv * 0.05);
+  const s = G.s, w = G.weapon(), next = G.WEAPONS[(s.wp || 0) + 1], pack = w.ammo * G.AMMO_PACK;
+  const pic = w.nuke ? G.art.bomb() : `<div class="wpic">${w.icon}</div>`;
   return `<div class="armory">
-    <div class="row head">${G.backBtn()}<span class="tag">${name} · Lv.${lv + 1}</span></div>
-    <div class="silo"><div class="grow" style="transform:scale(${scale})">${G.art.bomb()}</div><div class="count">×${s.nukes}</div>
-      <button class="mark" onclick="G.shroomSheet()">${G.art.shroom(s.shroom, 'mini')}<b>내 버섯구름</b></button></div>
+    <div class="row head">${G.backBtn()}<span class="tag">${w.name} · 위력 ${G.dmg()}</span></div>
+    <div class="silo"><div class="grow" style="transform:scale(${Math.min(1, 0.6 + (s.wp || 0) * 0.07)})">${pic}</div><div class="count">탄 ×${s.nukes}</div>
+      ${w.nuke ? `<button class="mark" onclick="G.shroomSheet()">${G.art.shroom(s.shroom, 'mini')}<b>내 버섯구름</b></button>` : ''}
+      <div class="ladder">${G.WEAPONS.map((x, i) => `<span class="${i === s.wp ? 'on' : i < s.wp ? 'past' : ''}">${i <= s.wp + 1 ? x.icon : '❔'}</span>`).join('')}</div></div>
+    ${next ? G.upRow(next.icon, next.name + '(으)로 발전', '위력 ' + w.dmg + ' → ' + next.dmg, next.cost, '더 센 무기', 'G.evolve()')
+           : `<div class="uprow"><span class="ic">👑</span><div><b>최강 무기</b><i>더 발전할 무기가 없어요</i></div><button class="off">끝</button></div>`}
     ${G.ARMORY.map(u => G.upRow(u.icon, u.name, 'Lv.' + s.up[u.id], G.upCost(u), u.effect, `G.upgrade('${u.id}')`)).join('')}
-    ${G.upRow('🔧', '핵 제작', '재고 ×' + s.nukes, G.NUKE_COST, '핵 +1', 'G.makeNuke()')}
+    ${G.upRow('🔧', '탄 만들기', '재고 ×' + s.nukes, pack, '탄 +' + G.AMMO_PACK, 'G.makeNuke()')}
   </div>`;
+};
+G.evolve = () => {
+  const s = G.s, next = G.WEAPONS[(s.wp || 0) + 1];
+  if (!next) return;
+  if (s.money < next.cost) return G.toast('돈이 모자라요');
+  s.wp = (s.wp || 0) + 1; G.earn(-next.cost); G.snd.play('win'); G.save(); G.render();
+  G.sheet(`<div class="result"><div class="big">${next.icon}</div><h3>${next.name}!</h3><p>위력 ${next.dmg} · 더 넓게 터져요${next.nuke ? ' · 버섯구름이 솟아요 🍄' : ''}</p><button class="cta in" onclick="G.closeSheet()">좋아!</button></div>`);
+};
+G.makeNuke = () => {
+  const s = G.s, cost = G.weapon().ammo * G.AMMO_PACK;
+  if (s.money < cost) return G.toast('돈이 모자라요');
+  s.nukes += G.AMMO_PACK; G.earn(-cost); G.save(); G.render();
 };
 
 // ── 연구소: 낮 사업(여행사) / 밤 사업(무기) ──

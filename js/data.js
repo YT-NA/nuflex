@@ -36,21 +36,21 @@ G.TIER_PAY = [600, 1000, 2000, 5000, 12000, 35000];
 G.CLIENTS = [
   { t: 0, voice: 820,    name: '동네 꼬마',   icon: '🧒', color: '#ffb02e', weak: true, plea: '형들이 맨날 때려요…',       spot: '일진 아지트',        enemy: '😈', main: '🏚', size: 84,  bld: 2, ppl: 3, tall: 0.2 },
   { t: 0, voice: 'bark', name: '멍멍이',      icon: '🐶', color: '#c9a070', weak: true, plea: '끼잉… 끼잉…',               spot: '못된 주인네 개집',   enemy: '👿', main: '🛖', size: 80,  bld: 1, ppl: 2, tall: 0.2 },
-  { t: 0, voice: 900,    name: '사탕가게 손녀', icon: '👧', color: '#ff8fc0', weak: true, plea: '옆 가게가 사탕을 훔쳐 가요!', spot: '도둑 캔디샵',        enemy: '🤥', main: '🍭', size: 84,  bld: 2, ppl: 2, tall: 0.25 },
+  { t: 0, voice: 900,    name: '사탕가게 손녀', icon: '👧', color: '#ff8fc0', weak: true, plea: '옆 가게가 사탕을 훔쳐 가요!', def: 'pan', spot: '도둑 캔디샵',        enemy: '🤥', main: '🍭', size: 84,  bld: 2, ppl: 2, tall: 0.25 },
   { t: 0, voice: 560,    name: '옆집 아내',   icon: '👩', color: '#e06b8b', weak: true, plea: '저 차 안에서 바람을…!',     spot: '바람피우는 자동차',  enemy: '💋', main: '🚗', size: 92,  bld: 1, ppl: 2, tall: 0.2 },
-  { t: 1, voice: 520,    name: '시장 아지매', icon: '👵', color: '#e06b8b', weak: true, plea: '더는 못 참겠어예…',         spot: '주정뱅이 골목',      enemy: '🤬', main: '🍻', size: 76,  bld: 5, ppl: 5, tall: 0.45 },
-  { t: 1, voice: 620,    name: '알바생',      icon: '🧑‍🍳', color: '#4aa3ff', weak: true, plea: '월급을 또 떼였어요…',       spot: '악덕 사장 빌딩',     enemy: '🤑', main: '🏢', size: 110, bld: 4, ppl: 4, tall: 0.5 },
-  { t: 2, voice: 190,    name: '수염 장군',   icon: '🥸', color: '#6b7f4f', plea: '저 녀석들을 날려 주게.',     spot: '라이벌 비밀기지',    enemy: '💀', main: '🏭', size: 120, bld: 6, ppl: 6, tall: 0.75 },
-  { t: 2, voice: 300,    name: '선글라스 박사', icon: '😎', color: '#5a5f8a', plea: '실험이 필요하오.',         spot: '악당 연구소',        enemy: '🤖', main: '🏰', size: 120, bld: 6, ppl: 6, tall: 0.8 },
-  { t: 2, voice: 150,    name: '망토 남작',   icon: '🧛', color: '#7a3d5c', plea: '후후… 부탁하지.',            spot: '괴수 둥지',          enemy: '👾', main: '🌋', size: 130, bld: 4, ppl: 6, tall: 0.6 },
-  { t: 3, voice: 240,    name: '검은 양복',   icon: '🕴', color: '#23263a', plea: '각하께서 원하십니다.',       spot: '하얀 관저',          enemy: '🕶', main: '🏛', size: 160, bld: 4, ppl: 6, tall: 0.5 },
-  { t: 3, voice: 440,    name: '관광청장',    icon: '🎩', color: '#7a5cff', plea: '저 탑이 우리 탑보다 높소!',  spot: '세계에서 제일 큰 철탑', enemy: '🥖', main: '🗼', size: 170, bld: 4, ppl: 6, tall: 0.5 },
-  { t: 3, voice: 380,    name: '수집가',      icon: '🧐', color: '#2f9e8f', plea: '세상에 하나만 있어야 하오.', spot: '횃불 든 동상',       enemy: '🗿', main: '🗽', size: 170, bld: 4, ppl: 6, tall: 0.5 },
-  { t: 4, voice: 170,    name: '독재자',      icon: '🫅', color: '#8a2d2d', plea: '저 나라가 눈에 거슬린다.',   spot: '이웃 나라 수도',     enemy: '💂', main: '🏙', size: 130, bld: 12, ppl: 9, tall: 1 },
-  { t: 4, voice: 210,    name: '총통',        icon: '👨‍✈️', color: '#4f6b3a', plea: '지도에서 지워 주게.',        spot: '모래모래국 통째로',  enemy: '🐫', main: '🕌', size: 140, bld: 12, ppl: 9, tall: 0.9 },
-  { t: 5, voice: 1100,   name: '외계 황제',   icon: '👽', color: '#38c172', plea: '삐리릭. 저 달이 눈부시다.',  spot: '달',                 enemy: '👾', main: '🌕', size: 190, bld: 0, ppl: 0, space: true },
-  { t: 5, voice: 700,    name: '은하 상인',   icon: '🛸', color: '#8fb6ff', plea: '저 고리, 장사에 방해된다.',  spot: '고리 달린 행성',     enemy: '👾', main: '🪐', size: 200, bld: 0, ppl: 0, space: true },
-  { t: 5, voice: 120,    name: '로봇 대왕',   icon: '🤖', color: '#8a8fa8', plea: '삑. 저 별똥별을 부숴라.',    spot: '거대 혜성',          enemy: '👾', main: '☄️', size: 190, bld: 0, ppl: 0, space: true },
+  { t: 1, voice: 520,    name: '시장 아지매', icon: '👵', color: '#e06b8b', weak: true, plea: '더는 못 참겠어예…',         def: 'pan', spot: '주정뱅이 골목',      enemy: '🤬', main: '🍻', size: 76,  bld: 5, ppl: 5, tall: 0.45 },
+  { t: 1, voice: 620,    name: '알바생',      icon: '🧑‍🍳', color: '#4aa3ff', weak: true, plea: '월급을 또 떼였어요…',       armor: 1, spot: '악덕 사장 빌딩',     enemy: '🤑', main: '🏢', size: 110, bld: 4, ppl: 4, tall: 0.5 },
+  { t: 2, voice: 190,    name: '수염 장군',   icon: '🥸', color: '#6b7f4f', plea: '저 녀석들을 날려 주게.',     def: 'anti', spot: '라이벌 비밀기지',    enemy: '💀', main: '🏭', size: 120, bld: 6, ppl: 6, tall: 0.75 },
+  { t: 2, voice: 300,    name: '선글라스 박사', icon: '😎', color: '#5a5f8a', plea: '실험이 필요하오.',         armor: 1.5, spot: '악당 연구소',        enemy: '🤖', main: '🏰', size: 120, bld: 6, ppl: 6, tall: 0.8 },
+  { t: 2, voice: 150,    name: '망토 남작',   icon: '🧛', color: '#7a3d5c', plea: '후후… 부탁하지.',            def: 'anti', spot: '괴수 둥지',          enemy: '👾', main: '🌋', size: 130, bld: 4, ppl: 6, tall: 0.6 },
+  { t: 3, voice: 240,    name: '검은 양복',   icon: '🕴', color: '#23263a', plea: '각하께서 원하십니다.',       def: 'anti', armor: 1, spot: '하얀 관저',          enemy: '🕶', main: '🏛', size: 160, bld: 4, ppl: 6, tall: 0.5 },
+  { t: 3, voice: 440,    name: '관광청장',    icon: '🎩', color: '#7a5cff', plea: '저 탑이 우리 탑보다 높소!',  armor: 2, spot: '세계에서 제일 큰 철탑', enemy: '🥖', main: '🗼', size: 170, bld: 4, ppl: 6, tall: 0.5 },
+  { t: 3, voice: 380,    name: '수집가',      icon: '🧐', color: '#2f9e8f', plea: '세상에 하나만 있어야 하오.', def: 'anti', armor: 1, spot: '횃불 든 동상',       enemy: '🗿', main: '🗽', size: 170, bld: 4, ppl: 6, tall: 0.5 },
+  { t: 4, voice: 170,    name: '독재자',      icon: '🫅', color: '#8a2d2d', plea: '저 나라가 눈에 거슬린다.',   def: 'anti', armor: 2, spot: '이웃 나라 수도',     enemy: '💂', main: '🏙', size: 130, bld: 12, ppl: 9, tall: 1 },
+  { t: 4, voice: 210,    name: '총통',        icon: '👨‍✈️', color: '#4f6b3a', plea: '지도에서 지워 주게.',        armor: 3, spot: '모래모래국 통째로',  enemy: '🐫', main: '🕌', size: 140, bld: 12, ppl: 9, tall: 0.9 },
+  { t: 5, voice: 1100,   name: '외계 황제',   icon: '👽', color: '#38c172', plea: '삐리릭. 저 달이 눈부시다.',  armor: 3, spot: '달',                 enemy: '👾', main: '🌕', size: 190, bld: 0, ppl: 0, space: true },
+  { t: 5, voice: 700,    name: '은하 상인',   icon: '🛸', color: '#8fb6ff', plea: '저 고리, 장사에 방해된다.',  def: 'anti', armor: 3, spot: '고리 달린 행성',     enemy: '👾', main: '🪐', size: 200, bld: 0, ppl: 0, space: true },
+  { t: 5, voice: 120,    name: '로봇 대왕',   icon: '🤖', color: '#8a8fa8', plea: '삑. 저 별똥별을 부숴라.',    def: 'anti', armor: 4, spot: '거대 혜성',          enemy: '👾', main: '☄️', size: 190, bld: 0, ppl: 0, space: true },
 ];
 
 // 연구(강화) — 값은 단계마다 ×1.5
@@ -73,14 +73,12 @@ G.DECOR = [
 ];
 // 무기고 — 핵만 키운다
 G.ARMORY = [
-  { id: 'power', name: '위력', icon: '💥', base: 300, effect: '대금 +15%' },
+  { id: 'power', name: '위력', icon: '💥', base: 300, effect: '위력 +15%' },
   { id: 'range', name: '범위', icon: '🎯', base: 250, effect: '더 넓게 박살' },
 ];
-G.NUKE_NAMES = ['꼬마탄', '통통탄', '우람탄', '왕폭탄', '대마왕탄'];
 G.NUKE_COST = 300;
 G.TRANSPORT = 100;          // 기본 운송비(만)
 G.HEAT_PER_OP = 25;
-G.FAIL_UNDER = 0.3;        // 박살 낸 비율이 이보다 낮으면 작전 실패
 
 // 상점(과금) — 지금은 시험용. 실제 결제는 구글 플레이 연결 뒤
 G.SHOP = [
@@ -97,10 +95,12 @@ G.GOALS = [
   { text: '가게 닫고 밤 맞기', done: s => s.day > 1 || s.phase === 'night', go: 'home' },
   { text: '첫 작전 성공',      done: s => s.stats.ops >= 1, go: 'ops' },
   { text: '새 노선 열기',      done: s => Object.keys(s.routes).length >= 2, go: 'map' },
-  { text: '핵 2개 쌓아 두기',  done: s => s.nukes >= 2, go: 'armory' },
-  { text: '핵 위력 올리기',    done: s => s.up.power >= 1, go: 'armory' },
+  { text: '물풍선으로 발전하기', done: s => (s.wp || 0) >= 1, go: 'armory' },
+  { text: '무기 위력 올리기',  done: s => s.up.power >= 1, go: 'armory' },
+  { text: '5단계 깨기',        done: s => (s.stage || 0) >= 5, go: 'ops', n: s => s.stage || 0, of: 5 },
+  { text: '진짜 핵 만들기',    done: s => (s.wp || 0) >= 5, go: 'armory' },
   { text: '노선 4곳 열기',     done: s => Object.keys(s.routes).length >= 4, go: 'map' },
-  { text: '작전 10번 성공',    done: s => s.stats.ops >= 10, go: 'ops', n: s => s.stats.ops, of: 10 },
+  { text: '18단계 깨기',       done: s => (s.stage || 0) >= 18, go: 'ops', n: s => s.stage || 0, of: 18 },
 ];
 
 // 버섯구름 모양 — 내 트레이드마크. cost=돈(만), gem=보석
@@ -135,3 +135,20 @@ G.LOOKS = [
   { kind: 'sticker', val: '🌈', name: '무지개', gem: 5 },
 ];
 G.LOOK_KINDS = [['dress', '👗 삐삐 옷'], ['hat', '🎩 삐삐 모자'], ['nuke', '🎨 핵 색'], ['sticker', '⭐ 핵 스티커']];
+
+// 무기 사다리 — 고무줄에서 핵까지. dmg=위력, r=터지는 넓이(화면 폭 비율), cost=이 무기로 발전하는 값(만), ammo=탄 한 발 값(만)
+G.WEAPONS = [
+  { name: '고무줄 새총', icon: '🪨', dmg: 10,   r: 0.10, cost: 0,      ammo: 4 },
+  { name: '물풍선',      icon: '🎈', dmg: 25,   r: 0.13, cost: 500,    ammo: 10 },
+  { name: '폭죽',        icon: '🧨', dmg: 60,   r: 0.16, cost: 1500,   ammo: 25 },
+  { name: '대포알',      icon: '💣', dmg: 150,  r: 0.19, cost: 5000,   ammo: 60 },
+  { name: '미사일',      icon: '🚀', dmg: 400,  r: 0.23, cost: 15000,  ammo: 150 },
+  { name: '꼬마 핵',     icon: '☢️', dmg: 1200, r: 0.29, cost: 50000,  ammo: 400, nuke: true },
+  { name: '대마왕 핵',   icon: '☢️', dmg: 4000, r: 0.36, cost: 200000, ammo: 1200, nuke: true },
+];
+G.MAX_SHOTS = 5;           // 한 작전에 쏠 수 있는 탄
+G.AMMO_PACK = 5;           // 한 번에 만드는 탄
+// 단계(스테이지): 깰수록 방어력이 가파르게, 대금도 따라 오른다
+G.STAGE_HP = 8;   G.STAGE_GROW = 1.4;
+G.STAGE_PAY = 300; G.PAY_GROW = 1.55;
+G.FAIL_UNDER = 0.5;        // 절반도 못 깨면 실패

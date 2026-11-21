@@ -101,6 +101,7 @@ G.backBtn = (label = '가게') => `<button class="back" onclick="G.go('home')">�
 G.boot = async () => {
   await G.load();
   if (G.s.phase === 'day' && !G.s.cust && G.s.left > 0) G.newCustomer();
+  if (G.s.phase === 'night' && !G.s.opDone && !G.s.mission) G.newMission();
   history.replaceState({ s: 'home' }, '');
   G.render();
   G.title();
