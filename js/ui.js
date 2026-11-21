@@ -1,0 +1,98 @@
+// 화면 틀: 위 상태창 · 가운데 장면 · 목표 한 줄 · 아래 탭
+G.screen = 'home';
+G.screens = {};
+const $ = id => document.getElementById(id);
+G.fmt = n => Math.round(n).toLocaleString('ko-KR') + '만';
+G.rand = arr => arr[Math.floor(Math.random() * arr.length)];
+G.country = id => G.COUNTRIES.find(c => c.id === id);
+
+const FLOW = ['nego', 'drop', 'pay', 'success'];   // 작전 중 화면 (뒤로·탭 막음)
+
+G.go = name => {
+  if (name !== G.screen) history.pushState({ s: name }, '');
+  G.screen = name;
+  G.closeSheet();
+  G.render();
+};
+window.addEventListener('popstate', () => {
+  if (!$('sheet').hidden) { G.closeSheet(); history.pushState({ s: G.screen }, ''); return; }
+  if (FLOW.includes(G.screen)) { history.pushState({ s: G.screen }, ''); return; }
+  G.screen = 'home';
+  G.render();
+});
+
+G.render = () => {
+  const s = G.s, night = s.phase === 'night';
+  document.body.classList.toggle('night', night);
+  $('top').innerHTML = `
+    <span class="chip day">${s.day}일 ${night ? '🌙' : '☀️'}</span>
+    <span class="chip">💰<b id="money">${G.fmt(s.money)}</b></span>
+    <span class="chip">💎<b>${s.gem}</b></span>
+    <span class="chip">⭐<b>${s.fame}</b></span>
+    <span class="chip heat" title="의심">🚨<i><u style="width:${Math.min(100, s.heat)}%"></u></i></span>`;
+  $('scene').innerHTML = G.screens[G.screen]();
+  // 목표 한 줄
+  const g = G.GOALS.find(x => !x.done(s));
+  const goal = $('goal');
+  if (g && !FLOW.includes(G.screen)) {
+    goal.hidden = false;
+    goal.innerHTML = `🎯 ${g.text} <b>${g.of ? g.n(s) + '/' + g.of : '0/1'}</b> ▶`;
+    goal.onclick = () => G.tab(g.go);
+  } else goal.hidden = true;
+  // 아래 탭
+  const tabs = [['research', '🔬', '연구'], ['counsel', '🏪', '매장'], ['armory', '🚀', '무기고'], ['ops', '🎯', '작전'], ['map', '🗺', '지도']];
+  $('tabs').innerHTML = tabs.map(([id, ic, nm]) =>
+    `<button class="${G.screen === id ? 'on' : ''}" onclick="G.tab('${id}')"><span>${ic}</span>${nm}${G.badge(id) ? '<em></em>' : ''}</button>`).join('');
+  $('tabs').classList.toggle('lock', FLOW.includes(G.screen));
+  if (G.afterRender) { const f = G.afterRender; G.afterRender = null; f(); }
+};
+
+// 할 일이 있는 탭에만 점
+G.badge = id => {
+  const s = G.s;
+  if (id === 'counsel') return s.phase === 'day' && s.left > 0;
+  if (id === 'ops') return s.phase === 'night' && !s.opDone;
+  return false;
+};
+
+G.tab = id => {
+  if (FLOW.includes(G.screen)) return;
+  if (id === 'counsel' && G.s.phase === 'night') return G.toast('🌙 셔터 내렸어요');
+  if (id === 'map') G.mapPick = false;
+  G.go(id);
+};
+
+// 아래에서 올라오는 창
+G.sheet = html => {
+  const el = $('sheet');
+  el.innerHTML = `<div class="dim" onclick="G.closeSheet()"></div><div class="box"><button class="x" onclick="G.closeSheet()">✕</button>${html}</div>`;
+  el.hidden = false;
+};
+G.closeSheet = () => { $('sheet').hidden = true; $('sheet').innerHTML = ''; };
+
+let toastTimer = null;
+G.toast = text => {
+  const el = $('toast');
+  el.textContent = text; el.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { el.hidden = true; }, 1600);
+};
+
+// 튀는 숫자
+G.pop = text => {
+  const el = document.createElement('div');
+  el.className = 'pop'; el.textContent = text;
+  $('app').appendChild(el);
+  setTimeout(() => el.remove(), 1200);
+};
+
+G.earn = n => { G.s.money += n; G.pop((n >= 0 ? '+' : '−') + G.fmt(Math.abs(n))); };
+
+G.backBtn = (label = '가게') => `<button class="back" onclick="G.go('home')">◀ ${label}</button>`;
+
+G.boot = async () => {
+  await G.load();
+  if (G.s.phase === 'day' && !G.s.cust && G.s.left > 0) G.newCustomer();
+  history.replaceState({ s: 'home' }, '');
+  G.render();
+};
