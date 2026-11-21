@@ -98,3 +98,35 @@ G.art.boom = () => `<svg viewBox="0 0 160 170" class="boom-svg">
     <circle cx="80" cy="42" r="30" fill="#ff9b5a"/><circle cx="80" cy="74" r="22" fill="#ffd23d"/>
   </g>
 </svg>`;
+
+// ── 버섯구름: 온갖 버섯 모양 (사람마다 고르는 트레이드마크) ──
+G.art.shroomBody = {
+  button: `<path d="M62 165 Q58 112 66 92 H94 Q102 112 98 165 Z" fill="#fff6e6"/>
+    <path d="M22 98 Q18 28 80 24 Q142 28 138 98 Q80 84 22 98 Z" fill="#f3ead9"/>
+    <path d="M40 60 Q60 40 84 38" fill="none" stroke="#fff" stroke-width="5"/>`,
+  shiitake: `<path d="M68 165 Q64 122 70 96 H90 Q96 122 92 165 Z" fill="#f1e2c4"/>
+    <path d="M8 102 Q28 42 80 40 Q132 42 152 102 Q80 86 8 102 Z" fill="#8a5a3c"/>
+    <g fill="none" stroke="#d9b98f" stroke-width="3"><path d="M50 62 L62 76 L54 88"/><path d="M84 52 L80 68 L96 78"/><path d="M112 62 L106 76 L122 86"/></g>`,
+  oyster: `<g fill="none" stroke-linecap="round"><path d="M80 165 Q84 120 110 84" stroke="#111522" stroke-width="20"/><path d="M80 165 Q70 130 54 108" stroke="#111522" stroke-width="18"/>
+    <path d="M80 165 Q84 120 110 84" stroke="#eceef4" stroke-width="12"/><path d="M80 165 Q70 130 54 108" stroke="#eceef4" stroke-width="10"/></g>
+    <ellipse cx="112" cy="66" rx="44" ry="24" transform="rotate(-14 112 66)" fill="#9aa3b5"/>
+    <ellipse cx="50" cy="96" rx="38" ry="19" transform="rotate(14 50 96)" fill="#b3bac8"/>
+    <ellipse cx="98" cy="122" rx="30" ry="14" transform="rotate(-8 98 122)" fill="#c7ccd8"/>`,
+  enoki: `<g fill="none" stroke-linecap="round" stroke="#111522" stroke-width="10"><path d="M80 165 Q70 100 30 44"/><path d="M80 165 Q74 90 54 28"/><path d="M80 165 Q80 90 80 18"/><path d="M80 165 Q86 90 106 28"/><path d="M80 165 Q90 100 130 44"/></g>
+    <g fill="none" stroke-linecap="round" stroke="#fff3d6" stroke-width="5"><path d="M80 165 Q70 100 30 44"/><path d="M80 165 Q74 90 54 28"/><path d="M80 165 Q80 90 80 18"/><path d="M80 165 Q86 90 106 28"/><path d="M80 165 Q90 100 130 44"/></g>
+    <g fill="#ffe2a0"><circle cx="30" cy="42" r="11"/><circle cx="54" cy="26" r="11"/><circle cx="80" cy="16" r="11"/><circle cx="106" cy="26" r="11"/><circle cx="130" cy="42" r="11"/></g>`,
+  agaric: `<path d="M64 165 Q60 120 68 94 H92 Q100 120 96 165 Z" fill="#fff"/>
+    <path d="M56 112 Q80 124 104 112 L108 122 Q80 136 52 122 Z" fill="#fff"/>
+    <path d="M16 100 Q22 28 80 22 Q138 28 144 100 Q80 84 16 100 Z" fill="#e5342b"/>
+    <g fill="#fff" stroke-width="2"><circle cx="52" cy="58" r="9"/><circle cx="84" cy="42" r="10"/><circle cx="114" cy="62" r="8"/><circle cx="70" cy="78" r="6"/><circle cx="100" cy="80" r="6"/><circle cx="34" cy="82" r="5"/><circle cx="128" cy="84" r="5"/></g>`,
+  king: `<path d="M52 165 Q42 100 60 62 H100 Q118 100 108 165 Z" fill="#f6efe0"/>
+    <path d="M42 68 Q48 28 80 26 Q112 28 118 68 Q80 56 42 68 Z" fill="#b9895a"/>`,
+  morel: `<path d="M64 165 Q62 132 68 112 H92 Q98 132 96 165 Z" fill="#f1e2c4"/>
+    <path d="M80 12 Q126 40 116 96 Q110 120 80 120 Q50 120 44 96 Q34 40 80 12 Z" fill="#a8794a"/>
+    <g fill="#6b4526" stroke-width="2"><ellipse cx="68" cy="46" rx="8" ry="11"/><ellipse cx="92" cy="44" rx="8" ry="11"/><ellipse cx="58" cy="76" rx="8" ry="11"/><ellipse cx="80" cy="74" rx="8" ry="12"/><ellipse cx="102" cy="76" rx="8" ry="11"/><ellipse cx="70" cy="102" rx="7" ry="9"/><ellipse cx="92" cy="102" rx="7" ry="9"/></g>`,
+  fire: `<path d="M70 165 Q74 112 68 88 H92 Q86 112 90 165 Z" fill="#ffd23d"/>
+    <circle cx="48" cy="64" r="26" fill="#ff7a3d"/><circle cx="112" cy="64" r="26" fill="#ff7a3d"/>
+    <circle cx="80" cy="44" r="30" fill="#ff9b5a"/><circle cx="80" cy="76" r="22" fill="#ffd23d"/>`,
+};
+G.art.shroom = (id, cls) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 170" width="160" height="170" class="${cls || 'boom-svg'}"><g stroke="#111522" stroke-width="4" stroke-linejoin="round">${G.art.shroomBody[id] || G.art.shroomBody.button}</g></svg>`;
+G.art.boom = () => G.art.shroom(G.s.shroom);

@@ -81,7 +81,7 @@ let dropRaf = null, dropPos = 0;
 G.screens.drop = () => {
   const s = G.s, m = s.mission, cl = G.CLIENTS[m.client], zone = Math.min(60, 20 + s.up.range * 6);
   G.afterRender = () => {
-    G.crush.start($('crush'), { enemy: cl.enemy, big: 1 + s.up.power * 0.12 });
+    G.crush.start($('crush'), { enemy: cl.enemy, big: 1 + s.up.power * 0.12, shroom: G.art.shroom(s.shroom) });
     const t0 = performance.now(), mark = $('mark');
     cancelAnimationFrame(dropRaf);
     const tick = t => {

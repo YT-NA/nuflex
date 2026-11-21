@@ -85,3 +85,15 @@ G.GOALS = [
   { text: '노선 4곳 열기',     done: s => Object.keys(s.routes).length >= 4, go: 'map' },
   { text: '작전 10번 성공',    done: s => s.stats.ops >= 10, go: 'ops', n: s => s.stats.ops, of: 10 },
 ];
+
+// 버섯구름 모양 — 내 트레이드마크. cost=돈(만), gem=보석
+G.SHROOMS = [
+  { id: 'button',   name: '양송이' },
+  { id: 'fire',     name: '불버섯' },
+  { id: 'shiitake', name: '표고',     cost: 300 },
+  { id: 'oyster',   name: '느타리',   cost: 500 },
+  { id: 'king',     name: '새송이',   cost: 800 },
+  { id: 'enoki',    name: '팽이',     gem: 5 },
+  { id: 'agaric',   name: '광대버섯', gem: 10 },
+  { id: 'morel',    name: '곰보버섯', gem: 15 },
+];

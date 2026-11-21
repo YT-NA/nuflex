@@ -2,7 +2,7 @@
 G.crush = (() => {
   let cv, ctx, W, H, gy, raf = 0, last = 0, live = false;
   let things = [], frags = [], dust = [], rings = [], bomb = null, fire = null;
-  let plane = 0.5, shake = 0, flash = 0, enemy = '😈', big = 1, night = true;
+  let plane = 0.5, shake = 0, flash = 0, enemy = '😈', big = 1, night = true, img = null, cloud = null;
   const COL = ['#ff8a5c', '#ffd23d', '#7fd3a8', '#8fb6ff', '#e59bd0', '#c9b08a'];
   const rnd = (a, b) => a + Math.random() * (b - a);
 
@@ -13,7 +13,9 @@ G.crush = (() => {
     W = r.width; H = r.height; cv.width = W * d; cv.height = H * d;
     ctx = cv.getContext('2d'); ctx.setTransform(d, 0, 0, d, 0, 0);
     gy = H * 0.86; enemy = opt.enemy || '😈'; big = opt.big || 1; night = document.body.classList.contains('night');
-    things = []; frags = []; dust = []; rings = []; bomb = null; fire = null; shake = flash = 0;
+    things = []; frags = []; dust = []; rings = []; bomb = null; fire = null; shake = flash = 0; cloud = null;
+    img = null;
+    if (opt.shroom) { img = new Image(); img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(opt.shroom); }
     let x = W * 0.16;
     while (true) {
       const w = rnd(28, 44), h = rnd(46, Math.min(150, H * 0.42));
@@ -62,6 +64,7 @@ G.crush = (() => {
     things = keep; bomb = null;
     flash = 1; shake = 20 * big; rings.push({ x: ix, r: 8, a: 1 }, { x: ix, r: 2, a: 1, slow: true });
     fire = { x: ix, r: 14, a: 1, R };
+    cloud = { x: Math.max(W * 0.3, Math.min(W * 0.7, ix)), t: 0 };
     for (let i = 0; i < 46; i++) dust.push({ x: ix + rnd(-R, R) * 0.8, y: gy - rnd(0, 30), vx: rnd(-120, 120), vy: rnd(-220, -30), r: rnd(6, 20), a: 0.75 });
     try { navigator.vibrate && navigator.vibrate([70, 40, 240]); } catch {}
     cb({ hit, total });
@@ -92,6 +95,7 @@ G.crush = (() => {
     rings = rings.filter(r => r.a > 0);
     if (fire) { fire.r += (fire.R * 0.9 - fire.r) * 9 * dt; fire.a -= 1.3 * dt; if (fire.a <= 0) fire = null; }
     shake *= Math.pow(0.02, dt); flash -= 3.5 * dt;
+    if (cloud) cloud.t += dt;
 
     // ── 그리기 ──
     ctx.clearRect(0, 0, W, H);
@@ -113,6 +117,12 @@ G.crush = (() => {
         ctx.fillStyle = '#55607d'; ctx.fillRect(b.x - 5, b.y - 20 - hop, 10, 13);
         ctx.font = '16px sans-serif'; ctx.fillText(enemy, b.x, b.y - 27 - hop);
       }
+    }
+    if (cloud && img && img.complete && img.naturalWidth) {
+      // 버섯구름: 땅에서 불쑥 솟아 통통 튀며 자리 잡는다
+      const k = Math.min(1, cloud.t / 0.75), c1 = 1.70158, c3 = c1 + 1, back = 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2);
+      const h = Math.min(H * 0.74, H * 0.56 * Math.sqrt(big)) * back * (1 + Math.sin(cloud.t * 3) * 0.015), w = h * 160 / 170;
+      ctx.globalAlpha = 0.96; ctx.drawImage(img, cloud.x - w / 2, gy - h, w, h); ctx.globalAlpha = 1;
     }
     ctx.lineWidth = 1;
     for (const f of frags) {

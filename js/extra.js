@@ -12,7 +12,8 @@ G.screens.armory = () => {
   const scale = Math.min(1, 0.55 + lv * 0.05);
   return `<div class="armory">
     <div class="row head">${G.backBtn()}<span class="tag">${name} · Lv.${lv + 1}</span></div>
-    <div class="silo"><div class="grow" style="transform:scale(${scale})">${G.art.bomb()}</div><div class="count">×${s.nukes}</div></div>
+    <div class="silo"><div class="grow" style="transform:scale(${scale})">${G.art.bomb()}</div><div class="count">×${s.nukes}</div>
+      <button class="mark" onclick="G.shroomSheet()">${G.art.shroom(s.shroom, 'mini')}<b>내 버섯구름</b></button></div>
     ${G.ARMORY.map(u => G.upRow(u.icon, u.name, 'Lv.' + s.up[u.id], G.upCost(u), u.effect, `G.upgrade('${u.id}')`)).join('')}
     ${G.upRow('🔧', '핵 제작', '재고 ×' + s.nukes, G.NUKE_COST, '핵 +1', 'G.makeNuke()')}
   </div>`;
@@ -93,4 +94,24 @@ G.gemToMoney = () => {
   const s = G.s;
   if (s.gem < 5) return G.toast('보석이 모자라요');
   s.gem -= 5; G.earn(500); G.save(); G.render(); G.side('shop');
+};
+
+// ── 버섯구름 고르기 (트레이드마크) ──
+G.shroomSheet = () => {
+  const s = G.s;
+  const cells = G.SHROOMS.map(m => {
+    const have = s.shrooms[m.id], on = s.shroom === m.id;
+    const label = on ? '✔ 사용 중' : have ? '고르기' : m.gem ? '💎' + m.gem : G.fmt(m.cost);
+    return `<button class="shr ${on ? 'on' : ''} ${have ? '' : 'lock'}" onclick="G.pickShroom('${m.id}')">${G.art.shroom(m.id, 'mini')}<b>${m.name}</b><i>${label}</i></button>`;
+  }).join('');
+  G.sheet(`<h3>🍄 내 버섯구름</h3><div class="shrs">${cells}</div>`);
+};
+G.pickShroom = id => {
+  const s = G.s, m = G.SHROOMS.find(x => x.id === id);
+  if (!s.shrooms[id]) {
+    if (m.gem) { if (s.gem < m.gem) return G.toast('💎 보석이 모자라요'); s.gem -= m.gem; G.snd.play('buy'); }
+    else { if (s.money < m.cost) return G.toast('돈이 모자라요'); G.earn(-m.cost); }
+    s.shrooms[id] = true;
+  }
+  s.shroom = id; G.save(); G.render(); G.shroomSheet();
 };
