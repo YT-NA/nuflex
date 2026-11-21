@@ -63,7 +63,7 @@ G.side = id => {
   const s = G.s;
   if (id === 'sound') { const on = G.snd.toggle(); G.render(); if (on) G.snd.play('good'); return G.toast(on ? (G.snd.state() === 'running' ? '🔊 소리 켬' : '🔊 켰는데 기기가 막고 있어요 (' + G.snd.state() + ')') : '🔇 소리 끔'); }
   if (id === 'shop') {
-    const rows = G.SHOP.map(p => `<div class="uprow"><span class="ic">${p.icon}</span><div><b>${p.name}</b><i>${s.flags[p.flag] ? '보유 중' : ''}</i></div>
+    const rows = G.SHOP.map(p => `<div class="uprow"><span class="ic">${p.icon}</span><div><b>${p.name}</b><i>${s.flags[p.flag] ? '보유 중' : (p.note || '')}</i></div>
       <button class="${s.flags[p.flag] ? 'off' : ''}" onclick="G.buy('${p.id}')">${p.won}</button></div>`).join('');
     return G.sheet(`<h3>🛒 상점 <small>시험판 · 실제 결제 없음</small></h3>${rows}
       <div class="uprow"><span class="ic">💰</span><div><b>급전</b><i>보석 → 돈</i></div><button class="${s.gem >= 5 ? '' : 'off'}" onclick="G.gemToMoney()">💎5<small>→ 500만</small></button></div>`);
@@ -86,6 +86,7 @@ G.buy = id => {
   if (p.flag && s.flags[p.flag]) return;
   if (p.flag) s.flags[p.flag] = true;
   if (p.gem) s.gem += p.gem;
+  if (p.flag === 'secretary' && s.cust) G.autoPick();
   G.save(); G.render(); G.side('shop');
   G.toast('시험판: 결제 없이 지급했어요');
 };

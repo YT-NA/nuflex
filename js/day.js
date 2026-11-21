@@ -47,6 +47,7 @@ G.newCustomer = () => {
   const i = Math.floor(Math.random() * 6);
   s.cust = { name: G.CUSTOMER_NAMES[i], color: G.CUSTOMER_COLORS[i], want: dest.id, likes, budget: 200 + Math.floor(Math.random() * 4) * 30 };
   s.pick = { dest: null, opts: [] };
+  if (s.flags.secretary) G.autoPick();
 };
 
 G.tripTotal = () => G.BASE_TRIP + G.s.pick.opts.reduce((a, id) => a + G.OPTIONS.find(o => o.id === id).price, 0);
@@ -76,7 +77,7 @@ G.screens.counsel = () => {
   else if (over) btn = `<button class="cta in off">예산 넘음</button>`;
   else btn = `<button class="cta in" onclick="G.contract()">✍️ 계약 → +${G.fmt(G.tripProfit())}</button>`;
   return `<div class="counsel">
-    <div class="row head">${G.backBtn()}<span class="tag">남은 손님 ${s.left}</span></div>
+    <div class="row head">${G.backBtn()}<button class="auto" onclick="G.autoAsk()">🤖 자동 추천<small>${G.autoLabel()}</small></button><span class="tag">손님 ${s.left}</span></div>
     <div class="room">
       <div class="desk-area">
         <button class="mapbtn" onclick="G.openMap(true)">🗺 ${dest ? dest.icon + ' ' + dest.name : '지도'}</button>
@@ -159,4 +160,28 @@ G.openRoute = id => {
   if (s.money < c.cost) return;
   s.routes[id] = true; G.earn(-c.cost); G.save(); G.closeSheet(); G.render();
   G.toast(`${c.icon} ${c.name} 노선이 열렸어요!`); G.snd.play('good');
+};
+
+// ── 자동 추천: 손님에게 맞는 여행지·패키지를 알아서 고른다 (과금: 하루 1번 무료 → 보석 1개, 비서를 채용하면 무제한) ──
+G.autoPick = () => {
+  const s = G.s, c = s.cust;
+  const open = G.COUNTRIES.filter(x => s.routes[x.id]);
+  const dest = s.routes[c.want] ? c.want : open[0].id;
+  let left = c.budget - G.BASE_TRIP; const opts = [];
+  const take = o => { if (o.price <= left && !opts.includes(o.id)) { opts.push(o.id); left -= o.price; } };
+  G.OPTIONS.filter(o => c.likes.includes(o.id)).forEach(take);                       // 좋아하는 것 먼저
+  G.OPTIONS.filter(o => !c.likes.includes(o.id)).sort((a, b) => b.price - a.price).forEach(take);   // 남은 예산은 비싼 것부터
+  s.pick = { dest, opts };
+};
+G.autoLabel = () => { const s = G.s; return s.flags.secretary ? '비서' : (s.autoDay || 0) < s.day ? '무료 1번' : '💎1'; };
+G.autoAsk = () => {
+  const s = G.s;
+  if (!s.cust) return;
+  if (!s.flags.secretary) {
+    if ((s.autoDay || 0) < s.day) s.autoDay = s.day;
+    else if (s.gem >= 1) s.gem -= 1;
+    else { G.toast('💎 보석이 모자라요'); return G.side('shop'); }
+  }
+  G.autoPick(); G.snd.play('good'); G.save(); G.render();
+  G.toast('🤖 딱 맞게 골랐어요!');
 };

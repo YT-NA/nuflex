@@ -46,4 +46,4 @@ G.save = () => {
   }, 800);
 };
 
-G.reset = () => { G.s = G.newState(); G.save(); G.screen = 'home'; G.closeSheet(); G.render(); };
+G.reset = () => { G.s = G.newState(); G.newCustomer(); G.save(); G.screen = 'home'; G.closeSheet(); G.render(); };

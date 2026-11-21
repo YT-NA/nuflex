@@ -71,6 +71,7 @@ G.FAIL_UNDER = 0.3;        // 박살 낸 비율이 이보다 낮으면 작전 �
 G.SHOP = [
   { id: 'gem30',  icon: '💎', name: '보석 30',   won: '₩1,200', gem: 30 },
   { id: 'gem100', icon: '💎', name: '보석 100',  won: '₩3,900', gem: 100 },
+  { id: 'sec',    icon: '🤖', name: '상담 비서', won: '₩3,300', flag: 'secretary', note: '자동 추천 무제한' },
   { id: 'noad',   icon: '🚫', name: '광고 제거', won: '₩5,500', flag: 'noad' },
   { id: 'month',  icon: '📅', name: '월정액',    won: '₩4,900', flag: 'month', gem: 10 },
 ];
