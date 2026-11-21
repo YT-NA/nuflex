@@ -1,0 +1,17 @@
+{
+ "name": "핵플렉스 — 당신의 안마당에 핵무기를 배달해 드립니다",
+ "short_name": "핵플렉스",
+ "start_url": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#0d1230",
+ "theme_color": "#0d1230",
+ "icons": [
+  {
+   "src": "icon.svg",
+   "sizes": "any",
+   "type": "image/svg+xml",
+   "purpose": "any"
+  }
+ ]
+}

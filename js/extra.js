@@ -18,21 +18,42 @@ G.screens.armory = () => {
   </div>`;
 };
 
+// ── 연구소: 낮 사업(여행사) / 밤 사업(무기) ──
+G.resSide = null;
+G.setSide = side => { G.resSide = side; G.render(); };
 G.screens.research = () => {
-  const s = G.s;
-  const row = (icon, name, lv, cost, effect, fn) => `<div class="uprow"><span class="ic">${icon}</span>
-    <div><b>${name}</b><i>${lv}</i></div>
-    <button class="${s.money >= cost ? '' : 'off'}" onclick="${fn}">${G.fmt(cost)}<small>→ ${effect}</small></button></div>`;
+  const s = G.s, side = G.resSide || (s.phase === 'night' ? 'night' : 'day');
+  const rows = G.UPGRADES.filter(u => u.side === side).map(u => {
+    const lv = s.up[u.id], full = u.max && lv >= u.max;
+    return full ? `<div class="uprow"><span class="ic">${u.icon}</span><div><b>${u.name}</b><i>Lv.${lv} · 끝</i></div><button class="off">최고</button></div>`
+      : G.upRow(u.icon, u.name, 'Lv.' + lv, G.upCost(u), u.effect, `G.upgrade('${u.id}')`);
+  }).join('');
+  const decor = side !== 'day' ? '' : `<h4 class="sec">🎀 가게 꾸미기</h4><div class="decos">${G.DECOR.map(x => s.decor[x.id]
+    ? `<button class="deco have"><span>${x.icon}</span><b>${x.name}</b><i>놓았어요</i></button>`
+    : `<button class="deco ${s.money >= x.cost ? '' : 'off'}" onclick="G.buyDecor('${x.id}')"><span>${x.icon}</span><b>${G.fmt(x.cost)}</b><i>${x.effect}</i></button>`).join('')}</div>`;
   return `<div class="research">
-    <div class="row head">${G.backBtn()}<span class="tag">연구</span></div>
-    ${G.UPGRADES.map(u => row(u.icon, u.name, 'Lv.' + s.up[u.id], G.upCost(u), u.effect, `G.upgrade('${u.id}')`)).join('')}
+    <div class="row head">${G.backBtn()}<span class="tag">연구소</span></div>
+    <div class="seg"><button class="${side === 'day' ? 'on' : ''}" onclick="G.setSide('day')">☀️ 여행사</button><button class="${side === 'night' ? 'on' : ''}" onclick="G.setSide('night')">🌙 무기 사업</button></div>
+    ${rows}${decor}
+    ${side === 'night' ? `<button class="reroll" onclick="G.go('armory')">🚀 핵은 무기고에서 키워요</button>` : ''}
   </div>`;
 };
 
 G.upgrade = id => {
   const s = G.s, u = G.UPGRADES.concat(G.ARMORY).find(x => x.id === id), cost = G.upCost(u);
+  if (u.max && s.up[id] >= u.max) return;
   if (s.money < cost) return G.toast('돈이 모자라요');
-  s.up[id]++; G.earn(-cost); G.save(); G.render();
+  s.up[id]++; G.earn(-cost);
+  if (id === 'expand' && s.phase === 'day') { s.left++; if (!s.cust) G.newCustomer(); }
+  G.save(); G.render();
+};
+
+G.buyDecor = id => {
+  const s = G.s, x = G.DECOR.find(k => k.id === id);
+  if (s.decor[id]) return;
+  if (s.money < x.cost) return G.toast('돈이 모자라요');
+  s.decor[id] = true; G.earn(-x.cost); G.save(); G.render();
+  G.toast(`${x.icon} 가게 앞에 놓았어요`);
 };
 
 G.sideBadge = id => (id === 'attend' && G.s.attendDay < G.s.day) || (id === 'ad' && G.s.adDay < G.s.day && !G.s.flags.noad);

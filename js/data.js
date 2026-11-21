@@ -39,10 +39,22 @@ G.CLIENTS = [
 ];
 
 // 연구(강화) — 값은 단계마다 ×1.5
+G.TITLE = '핵플렉스';
+G.SUBTITLE = '당신의 안마당에 핵무기를 배달해 드립니다.';
+
+// 연구소 — 낮 사업(여행사)과 밤 사업(무기)을 따로 키운다. 값은 단계마다 ×1.5
 G.UPGRADES = [
-  { id: 'talk',  name: '말솜씨',    icon: '🗣', base: 200, effect: '여행 수익 +10%' },
-  { id: 'truck', name: '트럭 개조', icon: '🚚', base: 250, effect: '운송비 −15만' },
-  { id: 'sign',  name: '위장 간판', icon: '🪧', base: 300, effect: '의심 −10%' },
+  { id: 'talk',   side: 'day',   name: '말솜씨',      icon: '🗣', base: 200, effect: '여행 수익 +10%' },
+  { id: 'expand', side: 'day',   name: '가게 확장',   icon: '🏬', base: 400, effect: '하루 손님 +1', max: 3 },
+  { id: 'truck',  side: 'night', name: '트럭 개조',   icon: '🚚', base: 250, effect: '운송비 −15만', max: 6 },
+  { id: 'net',    side: 'night', name: '암시장 인맥', icon: '🕶', base: 350, effect: '의뢰 대금 +10%' },
+  { id: 'sign',   side: 'night', name: '변장술',      icon: '🥸', base: 300, effect: '의심 −10%', max: 8 },
+];
+// 여행사 꾸미기 — 한 번 사면 가게 앞에 놓인다
+G.DECOR = [
+  { id: 'plant',   name: '화분',      icon: '🪴', cost: 200, effect: '계약마다 ⭐+1', x: 10, y: 0 },
+  { id: 'balloon', name: '풍선',      icon: '🎈', cost: 400, effect: '계약마다 팁 +20만', x: 84, y: 44 },
+  { id: 'neon',    name: '반짝 전구', icon: '💡', cost: 800, effect: '여행 수익 +10%', x: 50, y: 86 },
 ];
 // 무기고 — 핵만 키운다
 G.ARMORY = [

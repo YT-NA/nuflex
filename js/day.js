@@ -16,7 +16,8 @@ G.screens.home = () => {
   return `<div class="home">
     <div class="sky"><i class="orb"></i>${night ? '<i class="star s1"></i><i class="star s2"></i><i class="star s3"></i>' : '<i class="cloud c1"></i><i class="cloud c2"></i>'}</div>
     <div class="side">${side}</div>
-    <div class="shop" onclick="G.tapShop()">${G.art.shop(night)}</div>
+    <div class="shop" style="width:${70 + s.up.expand * 4}%" onclick="G.tapShop()">${G.art.shop(night)}
+      ${G.DECOR.filter(x => s.decor[x.id]).map(x => `<span class="decor" style="left:${x.x}%;bottom:${x.y}%">${x.icon}</span>`).join('')}</div>
     ${night ? `<div class="truck" onclick="G.go('ops')">${G.art.truck()}</div>` : ''}
     <div class="hero"><div class="bubble">${bubble}</div>${G.art.hero(night)}</div>
     ${walkers}
@@ -53,7 +54,8 @@ G.tripStars = () => {
   const { cust, pick } = G.s;
   return Math.min(5, 1 + (pick.dest === cust.want ? 2 : 0) + pick.opts.filter(o => cust.likes.includes(o)).length);
 };
-G.tripProfit = () => Math.round(G.tripTotal() * 0.5 * (1 + G.s.up.talk * 0.1));
+G.tripProfit = () => Math.round(G.tripTotal() * 0.5 * (1 + G.s.up.talk * 0.1 + (G.s.decor.neon ? 0.1 : 0)));
+G.dayCustomers = () => G.CUSTOMERS_PER_DAY + G.s.up.expand + Math.min(3, Math.floor(G.s.fame / 30));
 
 // ── 상담실 ──
 G.screens.counsel = () => {
@@ -99,7 +101,8 @@ G.toggleOpt = id => {
 };
 
 G.contract = () => {
-  const s = G.s, stars = G.tripStars(), tip = stars === 5 ? 50 : 0, profit = G.tripProfit() + tip;
+  const s = G.s, stars = G.tripStars(), tip = (stars === 5 ? 50 : 0) + (s.decor.balloon ? 20 : 0), profit = G.tripProfit() + tip;
+  if (s.decor.plant) s.fame += 1;
   const name = s.cust.name;
   s.fame += stars; s.heat = Math.max(0, s.heat - stars * 2);
   s.stats.served++; s.left--;

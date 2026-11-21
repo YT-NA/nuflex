@@ -40,7 +40,7 @@ G.render = () => {
     goal.onclick = () => G.tab(g.go);
   } else goal.hidden = true;
   // 아래 탭
-  const tabs = [['research', '🔬', '연구'], ['counsel', '🏪', '매장'], ['armory', '🚀', '무기고'], ['ops', '🎯', '작전'], ['map', '🗺', '지도']];
+  const tabs = [['research', '🔬', '연구소'], ['counsel', '🏪', '매장'], ['armory', '🚀', '무기고'], ['ops', '🎯', '작전'], ['map', '🗺', '지도']];
   $('tabs').innerHTML = tabs.map(([id, ic, nm]) =>
     `<button class="${G.screen === id ? 'on' : ''}" onclick="G.tab('${id}')"><span>${ic}</span>${nm}${G.badge(id) ? '<em></em>' : ''}</button>`).join('');
   $('tabs').classList.toggle('lock', FLOW.includes(G.screen));
@@ -59,6 +59,7 @@ G.tab = id => {
   if (FLOW.includes(G.screen)) return;
   if (id === 'counsel' && G.s.phase === 'night') return G.toast('🌙 셔터 내렸어요');
   if (id === 'map') G.mapPick = false;
+  if (id === 'research') G.resSide = null;
   G.go(id);
 };
 
@@ -95,4 +96,15 @@ G.boot = async () => {
   if (G.s.phase === 'day' && !G.s.cust && G.s.left > 0) G.newCustomer();
   history.replaceState({ s: 'home' }, '');
   G.render();
+  G.title();
+};
+
+// 시작 화면 (제목 + 부제). 누르면 사라진다
+G.title = () => {
+  const el = document.createElement('div');
+  el.id = 'title';
+  el.innerHTML = `<div class="t-art"><div class="t-bomb">${G.art.bomb()}</div><div class="t-hero">${G.art.hero(true)}</div></div>
+    <h1>${G.TITLE}</h1><h2>NUflex</h2><p>${G.SUBTITLE}</p><button class="cta">▶ 시작</button>`;
+  el.onclick = () => { el.classList.add('bye'); setTimeout(() => el.remove(), 300); };
+  $('app').appendChild(el);
 };

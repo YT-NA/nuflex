@@ -8,6 +8,7 @@ G.newMission = () => {
   do { ci = Math.floor(Math.random() * G.CLIENTS.length); } while (s.mission && ci === s.mission.client);
   const cl = G.CLIENTS[ci];
   let offer = 500 + s.day * 60 + far * 6 + c.cost * 0.3;
+  offer *= 1 + s.up.net * 0.1;
   if (cl.weak) offer *= 0.4;                       // 약자는 가진 돈이 적다
   s.mission = { client: ci, target: c.id, offer: Math.round(offer / 10) * 10, price: 0, tried: false, free: false, acc: 0, rerolled: !!(s.mission && s.mission.rerolled) };
 };
@@ -161,7 +162,7 @@ G.screens.success = () => {
 G.morning = () => {
   const s = G.s;
   s.day++; s.phase = 'day'; s.opDone = false; s.mission = null;
-  s.left = G.CUSTOMERS_PER_DAY + Math.min(3, Math.floor(s.fame / 30)); G.newCustomer();
+  s.left = G.dayCustomers(); G.newCustomer();
   let raid = 0;
   if (s.heat >= 100) { raid = Math.round(s.money * 0.3); s.money -= raid; s.heat = 50; }
   G.save(); G.screen = 'home'; history.pushState({ s: 'home' }, ''); G.render();
