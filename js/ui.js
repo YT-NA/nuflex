@@ -105,7 +105,7 @@ G.title = () => {
   const el = document.createElement('div');
   el.id = 'title';
   el.innerHTML = `<div class="t-art"><div class="t-bomb">${G.art.bomb()}</div><div class="t-hero">${G.art.hero(true)}</div></div>
-    <h1>${G.TITLE}</h1><h2>NUflex</h2><p>${G.SUBTITLE}</p><button class="cta">▶ 시작</button>`;
+    <h1>${G.TITLE}</h1><h2>Nuflex</h2><p>${G.SUBTITLE}</p><button class="cta">▶ 시작</button>`;
   el.onclick = () => { el.classList.add('bye'); setTimeout(() => el.remove(), 300); };
   $('app').appendChild(el);
 };

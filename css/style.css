@@ -1,4 +1,4 @@
-/* NUflex — 휴대폰 360×780 기준. 색: 바탕 하나 + 강조 하나 (낮: 주황, 밤: 형광 연두) */
+/* Nuflex — 휴대폰 360×780 기준. 색: 바탕 하나 + 강조 하나 (낮: 주황, 밤: 형광 연두) */
 :root { --bg:#ffe9c2; --panel:#fff8ea; --ink:#2b2b3a; --soft:#8d7f6a; --acc:#ff7a3d; --acc-ink:#fff; --line:#2b2b3a; --sky1:#8fd6ff; --sky2:#d9f3ff; --ground:#e9c98f; }
 body.night { --bg:#141a33; --panel:#222a4d; --ink:#eef0ff; --soft:#9aa3cf; --acc:#b6ff3d; --acc-ink:#141a33; --line:#0b0e1c; --sky1:#0d1230; --sky2:#27306a; --ground:#2c3358; }
 * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
