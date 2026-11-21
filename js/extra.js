@@ -61,7 +61,7 @@ G.sideBadge = id => (id === 'attend' && G.s.attendDay < G.s.day) || (id === 'ad'
 
 G.side = id => {
   const s = G.s;
-  if (id === 'sound') { const on = G.snd.toggle(); G.render(); return G.toast(on ? '🔊 소리 켬' : '🔇 소리 끔'); }
+  if (id === 'sound') { const on = G.snd.toggle(); G.render(); if (on) G.snd.play('good'); return G.toast(on ? (G.snd.state() === 'running' ? '🔊 소리 켬' : '🔊 켰는데 기기가 막고 있어요 (' + G.snd.state() + ')') : '🔇 소리 끔'); }
   if (id === 'shop') {
     const rows = G.SHOP.map(p => `<div class="uprow"><span class="ic">${p.icon}</span><div><b>${p.name}</b><i>${s.flags[p.flag] ? '보유 중' : ''}</i></div>
       <button class="${s.flags[p.flag] ? 'off' : ''}" onclick="G.buy('${p.id}')">${p.won}</button></div>`).join('');

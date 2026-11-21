@@ -104,12 +104,13 @@ G.dropNow = () => {
   cancelAnimationFrame(dropRaf);
   const s = G.s, m = s.mission, btn = $('dropbtn');
   btn.classList.add('off'); G.snd.play('fall');
-  G.crush.release(0.08 + 0.84 * dropPos, 0.34 + s.up.range * 0.05, res => {
+  G.crush.release(0.08 + 0.84 * dropPos, 0.26 + s.up.range * 0.05, res => {
     m.acc = res.total ? res.hit / res.total : 0; G.snd.play('boom');
     const msg = $('crushmsg');
-    msg.innerHTML = `${m.acc >= 1 ? '완전 박살!!' : m.acc >= 0.6 ? '와장창!' : m.acc > 0 ? '빗나갔다…' : '헛방…'}<small>💥 ${res.hit} / ${res.total}</small>`;
+    const fail = m.acc < G.FAIL_UNDER;
+    msg.innerHTML = `${m.acc >= 1 ? '완전 박살!!' : m.acc >= 0.6 ? '와장창!' : fail ? '빗나갔다…' : '아슬아슬!'}<small>💥 ${res.hit} / ${res.total}</small>`;
     msg.hidden = false;
-    setTimeout(() => { if (!btn.isConnected) return; btn.textContent = '계속 ▶'; btn.classList.remove('off'); btn.onclick = () => G.go('pay'); }, 1300);
+    setTimeout(() => { if (!btn.isConnected) return; btn.textContent = '계속 ▶'; btn.classList.remove('off'); btn.onclick = () => m.acc < G.FAIL_UNDER ? G.failOp() : G.go('pay'); }, 1300);
   });
 };
 
@@ -145,6 +146,26 @@ G.collect = () => {
   s.heat = Math.min(100, s.heat + heat); s.fame += fame; s.stats.ops++; s.opDone = true;
   s.lastOp = { total: p.total, heat, fame };
   G.earn(p.total); G.save(); G.go('success'); G.snd.play('win');
+};
+
+// ── 작전 실패: 표적을 거의 못 맞혔다 ──
+G.failOp = () => {
+  const s = G.s, m = s.mission, cost = m.free ? 0 : Math.max(10, G.TRANSPORT - s.up.truck * 15);
+  const heat = Math.round(G.HEAT_PER_OP * 0.6);
+  s.heat = Math.min(100, s.heat + heat); s.fame = Math.max(0, s.fame - 3); s.opDone = true;
+  s.stats.fails = (s.stats.fails || 0) + 1; s.lastOp = { total: -cost, heat, fail: true };
+  s.money = Math.max(0, s.money - cost);
+  G.save(); G.go('fail'); G.snd.play('bad');
+};
+G.screens.fail = () => {
+  const s = G.s, m = s.mission, cl = G.CLIENTS[m.client], o = s.lastOp;
+  return `<div class="success fail">
+    <div class="seat"><div class="bubble">${cl.weak ? '괜찮아요… 다음엔 꼭…' : '이게 뭐야! 돈은 없어!'}</div>${G.art.person(cl.color, cl.icon)}</div>
+    <h2>작전 실패…</h2>
+    <p>핵 1개 날림 · 💰 ${o.total ? '−' + G.fmt(-o.total) : '0'} · ⭐ −3 · 🚨 +${o.heat}</p>
+    <p class="hint">🎯 초록 칸에서 누르면 더 많이 박살 나요</p>
+    <button class="cta in" onclick="G.morning()">☀️ 아침 맞기</button>
+  </div>`;
 };
 
 // ── 작전 성공 ──

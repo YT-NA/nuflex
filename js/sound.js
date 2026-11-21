@@ -4,13 +4,33 @@ G.snd = (() => {
   try { on = localStorage.getItem('nuflex_snd') !== '0'; } catch {}
 
   function init() {
-    if (ac) { if (ac.state === 'suspended') ac.resume(); return; }
+    try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch {}   // 아이폰 무음 스위치여도 나게
+    if (ac) {
+      if (ac.state !== 'running') ac.resume().then(kick).catch(() => {});
+      return;
+    }
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) return;
     ac = new AC();
     master = ac.createGain(); master.gain.value = on ? 0.8 : 0; master.connect(ac.destination);
     bgmGain = ac.createGain(); bgmGain.gain.value = 0.5; bgmGain.connect(master);
     timer = setInterval(pump, 100);
+    ac.resume().then(kick).catch(() => {});
+  }
+  // 소리 없는 한 조각을 틀어 아이폰의 잠금을 푼다
+  let kicked = false;
+  function kick() {
+    if (kicked || !ac || ac.state !== 'running') return;
+    kicked = true;
+    const b = ac.createBuffer(1, 1, 22050), s = ac.createBufferSource();
+    s.buffer = b; s.connect(ac.destination); s.start(0);
+  }
+  // 말소리: 인물마다 높낮이가 다른 옹알이
+  function talk(pitch) {
+    if (!ac || !on) return;
+    if (pitch === 'bark') { tone(420, 0, 0.09, 'square', 0.16, 250); tone(460, 0.16, 0.11, 'square', 0.16, 240); return; }
+    const n = 5 + Math.floor(Math.random() * 4);
+    for (let i = 0; i < n; i++) tone(pitch * (0.85 + Math.random() * 0.4), i * 0.075, 0.06, 'triangle', 0.14);
   }
 
   // 음 하나: f → f2 로 미끄러질 수 있다
@@ -74,6 +94,8 @@ G.snd = (() => {
   return {
     init,
     play: name => { if (ac && on && S[name]) S[name](); },
+    talk,
+    state: () => ac ? ac.state : 'none',
     bgm: m => { if (m !== mode) { mode = m; step = 0; } },
     quiet: q => { if (bgmGain) bgmGain.gain.setTargetAtTime(q ? 0.08 : 0.5, ac.currentTime, 0.1); },
     toggle: () => { on = !on; try { localStorage.setItem('nuflex_snd', on ? '1' : '0'); } catch {} if (master) master.gain.value = on ? 0.8 : 0; return on; },
@@ -82,7 +104,7 @@ G.snd = (() => {
 })();
 
 // 첫 손가락 터치에서 소리를 깨우고, 버튼마다 톡 소리
-document.addEventListener('pointerdown', e => {
-  G.snd.init();
+['pointerdown', 'pointerup', 'touchend', 'click', 'keydown'].forEach(ev => document.addEventListener(ev, () => G.snd.init(), true));
+document.addEventListener('click', e => {
   if (e.target.closest && e.target.closest('button')) G.snd.play('tap');
 }, true);

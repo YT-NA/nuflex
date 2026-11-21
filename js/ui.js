@@ -6,7 +6,7 @@ G.fmt = n => Math.round(n).toLocaleString('ko-KR') + '만';
 G.rand = arr => arr[Math.floor(Math.random() * arr.length)];
 G.country = id => G.COUNTRIES.find(c => c.id === id);
 
-const FLOW = ['nego', 'drop', 'pay', 'success'];   // 작전 중 화면 (뒤로·탭 막음)
+const FLOW = ['nego', 'drop', 'pay', 'success', 'fail'];   // 작전 중 화면 (뒤로·탭 막음)
 
 G.go = name => {
   if (name !== G.screen) history.pushState({ s: name }, '');
@@ -45,6 +45,12 @@ G.render = () => {
   $('tabs').innerHTML = tabs.map(([id, ic, nm]) =>
     `<button class="${G.screen === id ? 'on' : ''}" onclick="G.tab('${id}')"><span>${ic}</span>${nm}${G.badge(id) ? '<em></em>' : ''}</button>`).join('');
   $('tabs').classList.toggle('lock', FLOW.includes(G.screen));
+  // 말풍선이 새로 뜨면 말소리
+  let who = null;
+  if (G.screen === 'counsel' && s.cust) who = 'c' + s.stats.served + s.cust.name;
+  if ((G.screen === 'ops' || G.screen === 'nego') && s.mission && night && !s.opDone) who = G.screen + s.mission.client + s.mission.tried;
+  if (who && who !== G.lastTalk) G.snd.talk(G.screen === 'counsel' ? 420 + (s.stats.served % 4) * 90 : (G.CLIENTS[s.mission.client].voice || 300));
+  G.lastTalk = who;
   if (G.afterRender) { const f = G.afterRender; G.afterRender = null; f(); }
 };
 

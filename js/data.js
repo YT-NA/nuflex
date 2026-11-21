@@ -29,13 +29,13 @@ G.CUSTOMER_NAMES = ['김 과장', '박 할머니', '신혼부부', '대학생', 
 
 // 밤 의뢰인 (모두 지어낸 것). weak=사회적 약자: 돈은 적지만 평판이 오르고 의심이 덜 오른다
 G.CLIENTS = [
-  { name: '동네 꼬마',   icon: '🧒', color: '#ffb02e', weak: true, plea: '형들이 맨날 때려요…',   spot: '일진 아지트',     enemy: '😈' },
-  { name: '멍멍이',      icon: '🐶', color: '#c9a070', weak: true, plea: '끼잉… 끼잉…',           spot: '학대범네 동네',   enemy: '👿' },
-  { name: '시장 아지매', icon: '👵', color: '#e06b8b', weak: true, plea: '더는 못 참겠어예…',     spot: '주정뱅이 골목',   enemy: '🤬' },
-  { name: '알바생',      icon: '🧑‍🍳', color: '#4aa3ff', weak: true, plea: '월급을 또 떼였어요…',   spot: '악덕 사장 빌딩',  enemy: '🤑' },
-  { name: '수염 장군',   icon: '🥸', color: '#6b7f4f', plea: '저 녀석들을 날려 주게.',   spot: '라이벌 비밀기지', enemy: '💀' },
-  { name: '선글라스 박사', icon: '😎', color: '#5a5f8a', plea: '실험이 필요하오.',       spot: '악당 연구소',     enemy: '🤖' },
-  { name: '망토 남작',   icon: '🧛', color: '#7a3d5c', plea: '후후… 부탁하지.',          spot: '괴수 둥지',       enemy: '👾' },
+  { voice: 820, name: '동네 꼬마',   icon: '🧒', color: '#ffb02e', weak: true, plea: '형들이 맨날 때려요…',   spot: '일진 아지트',     enemy: '😈' },
+  { voice: 'bark', name: '멍멍이',      icon: '🐶', color: '#c9a070', weak: true, plea: '끼잉… 끼잉…',           spot: '학대범네 동네',   enemy: '👿' },
+  { voice: 520, name: '시장 아지매', icon: '👵', color: '#e06b8b', weak: true, plea: '더는 못 참겠어예…',     spot: '주정뱅이 골목',   enemy: '🤬' },
+  { voice: 620, name: '알바생',      icon: '🧑‍🍳', color: '#4aa3ff', weak: true, plea: '월급을 또 떼였어요…',   spot: '악덕 사장 빌딩',  enemy: '🤑' },
+  { voice: 190, name: '수염 장군',   icon: '🥸', color: '#6b7f4f', plea: '저 녀석들을 날려 주게.',   spot: '라이벌 비밀기지', enemy: '💀' },
+  { voice: 300, name: '선글라스 박사', icon: '😎', color: '#5a5f8a', plea: '실험이 필요하오.',       spot: '악당 연구소',     enemy: '🤖' },
+  { voice: 150, name: '망토 남작',   icon: '🧛', color: '#7a3d5c', plea: '후후… 부탁하지.',          spot: '괴수 둥지',       enemy: '👾' },
 ];
 
 // 연구(강화) — 값은 단계마다 ×1.5
@@ -65,6 +65,7 @@ G.NUKE_NAMES = ['꼬마탄', '통통탄', '우람탄', '왕폭탄', '대마왕�
 G.NUKE_COST = 300;
 G.TRANSPORT = 100;          // 기본 운송비(만)
 G.HEAT_PER_OP = 25;
+G.FAIL_UNDER = 0.3;        // 박살 낸 비율이 이보다 낮으면 작전 실패
 
 // 상점(과금) — 지금은 시험용. 실제 결제는 구글 플레이 연결 뒤
 G.SHOP = [

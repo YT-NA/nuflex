@@ -229,3 +229,5 @@ body.night .decor { filter:brightness(.55); }
 .shr b { font-size:12px; } .shr i { font-size:11px; font-style:normal; font-weight:700; color:var(--soft); }
 .shr.on { background:var(--acc); color:var(--acc-ink); } .shr.on i { color:inherit; }
 .shr.lock svg { filter:grayscale(.6) brightness(.9); opacity:.75; }
+
+.fail .seat { width:40%; } .fail h2 { color:#ff6b6b; } .hint { opacity:.75; font-size:13px !important; }
