@@ -69,9 +69,9 @@ G.screens.nego = () => {
 
 G.haggle = (mult, chance) => {
   const m = G.s.mission;
-  if (Math.random() < chance) { G.toast('😎 통했다!'); return G.deal(Math.round(m.offer * mult)); }
+  if (Math.random() < chance) { G.toast('😎 통했다!'); G.snd.play('good'); return G.deal(Math.round(m.offer * mult)); }
   m.tried = true; m.price = Math.round(m.offer * 0.85 / 10) * 10;
-  G.toast('😡 안 통했어요'); G.render();
+  G.toast('😡 안 통했어요'); G.snd.play('bad'); G.render();
 };
 
 G.deal = (price, free) => { const m = G.s.mission; m.price = price; m.free = !!free; G.s.nukes--; G.save(); G.go('drop'); };
@@ -103,9 +103,9 @@ G.screens.drop = () => {
 G.dropNow = () => {
   cancelAnimationFrame(dropRaf);
   const s = G.s, m = s.mission, btn = $('dropbtn');
-  btn.classList.add('off');
+  btn.classList.add('off'); G.snd.play('fall');
   G.crush.release(0.08 + 0.84 * dropPos, 0.34 + s.up.range * 0.05, res => {
-    m.acc = res.total ? res.hit / res.total : 0;
+    m.acc = res.total ? res.hit / res.total : 0; G.snd.play('boom');
     const msg = $('crushmsg');
     msg.innerHTML = `${m.acc >= 1 ? '완전 박살!!' : m.acc >= 0.6 ? '와장창!' : m.acc > 0 ? '빗나갔다…' : '헛방…'}<small>💥 ${res.hit} / ${res.total}</small>`;
     msg.hidden = false;
@@ -144,7 +144,7 @@ G.collect = () => {
   const heat = Math.round(G.HEAT_PER_OP * (1 - s.up.sign * 0.1) * (cl.weak ? 0.4 : 1));
   s.heat = Math.min(100, s.heat + heat); s.fame += fame; s.stats.ops++; s.opDone = true;
   s.lastOp = { total: p.total, heat, fame };
-  G.earn(p.total); G.save(); G.go('success');
+  G.earn(p.total); G.save(); G.go('success'); G.snd.play('win');
 };
 
 // ── 작전 성공 ──
@@ -166,6 +166,7 @@ G.morning = () => {
   let raid = 0;
   if (s.heat >= 100) { raid = Math.round(s.money * 0.3); s.money -= raid; s.heat = 50; }
   G.save(); G.screen = 'home'; history.pushState({ s: 'home' }, ''); G.render();
+  G.snd.play(raid ? 'raid' : 'morn');
   if (raid) G.sheet(`<div class="result"><div class="big">🚓</div><h3>단속!</h3><p>의심이 가득 찼어요 · 벌금 −${G.fmt(raid)}</p><p>낮 손님을 잘 모시면 의심이 내려가요</p><button class="cta in" onclick="G.closeSheet()">확인</button></div>`);
   else G.toast(`☀️ ${s.day}일째 아침`);
 };

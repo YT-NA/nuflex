@@ -3,7 +3,7 @@
 // ── 가게 앞 (낮·밤 공용 첫 화면) ──
 G.screens.home = () => {
   const s = G.s, night = s.phase === 'night';
-  const side = [['shop', '🛒', '상점'], ['attend', '🎁', '출석'], ['ad', '📺', '광고'], ['mail', '✉️', '우편']]
+  const side = [['shop', '🛒', '상점'], ['attend', '🎁', '출석'], ['ad', '📺', '광고'], ['mail', '✉️', '우편'], ['sound', G.snd.isOn() ? '🔊' : '🔇', '소리']]
     .map(([id, ic, nm]) => `<button onclick="G.side('${id}')"><span>${ic}</span>${nm}${G.sideBadge(id) ? '<em></em>' : ''}</button>`).join('');
   let cta, bubble;
   if (!night) {
@@ -34,7 +34,7 @@ G.closeShop = () => {
   s.phase = 'night'; s.opDone = false; s.cust = null;
   G.newMission();
   G.save(); G.go('home');
-  G.toast('🌙 밤이 됐어요');
+  G.toast('🌙 밤이 됐어요'); G.snd.play('night');
 };
 
 // ── 손님 ──
@@ -108,7 +108,7 @@ G.contract = () => {
   s.stats.served++; s.left--;
   s.cust = null;
   if (s.left > 0) G.newCustomer();
-  G.earn(profit); G.save(); G.render();
+  G.earn(profit); if (stars >= 4) G.snd.play('good'); G.save(); G.render();
   G.sheet(`<div class="result"><div class="big">${stars >= 4 ? '😍' : stars >= 3 ? '🙂' : '😐'}</div>
     <h3>${name}</h3><div class="stars lg">${'★'.repeat(stars)}${'☆'.repeat(5 - stars)}</div>
     <p>💰 +${G.fmt(profit)}${tip ? ' (팁 포함)' : ''} · ⭐ +${stars} · 🚨 −${stars * 2}</p>
@@ -158,5 +158,5 @@ G.openRoute = id => {
   const s = G.s, c = G.country(id);
   if (s.money < c.cost) return;
   s.routes[id] = true; G.earn(-c.cost); G.save(); G.closeSheet(); G.render();
-  G.toast(`${c.icon} ${c.name} 노선이 열렸어요!`);
+  G.toast(`${c.icon} ${c.name} 노선이 열렸어요!`); G.snd.play('good');
 };

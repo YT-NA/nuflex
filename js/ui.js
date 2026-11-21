@@ -24,6 +24,7 @@ window.addEventListener('popstate', () => {
 G.render = () => {
   const s = G.s, night = s.phase === 'night';
   document.body.classList.toggle('night', night);
+  G.snd.bgm(night ? 'night' : 'day'); G.snd.quiet(G.screen === 'drop');
   $('top').innerHTML = `
     <span class="chip day">${s.day}일 ${night ? '🌙' : '☀️'}</span>
     <span class="chip">💰<b id="money">${G.fmt(s.money)}</b></span>
@@ -87,7 +88,7 @@ G.pop = text => {
   setTimeout(() => el.remove(), 1200);
 };
 
-G.earn = n => { G.s.money += n; G.pop((n >= 0 ? '+' : '−') + G.fmt(Math.abs(n))); };
+G.earn = n => { G.snd.play(n >= 0 ? 'coin' : 'buy'); G.s.money += n; G.pop((n >= 0 ? '+' : '−') + G.fmt(Math.abs(n))); };
 
 G.backBtn = (label = '가게') => `<button class="back" onclick="G.go('home')">◀ ${label}</button>`;
 

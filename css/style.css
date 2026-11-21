@@ -217,3 +217,5 @@ body:not(.night) .mcard em { color:#d9530f; }
 .shop { transition:width .3s; }
 .decor { position:absolute; font-size:26px; transform:translateX(-50%); animation:bob 2.4s ease-in-out infinite; pointer-events:none; }
 body.night .decor { filter:brightness(.55); }
+
+.side { gap:6px; } .side button { width:46px; height:46px; }
