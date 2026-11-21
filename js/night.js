@@ -1,22 +1,22 @@
 // 밤: 작전(의뢰) · 협상 · 투하 · 정산 · 성공
 
+G.opTier = () => { let t = 0; G.TIER_AT.forEach((at, i) => { if (G.s.stats.ops >= at) t = i; }); return t; };
 G.newMission = () => {
-  const s = G.s;
+  const s = G.s, tier = G.opTier();
   const c = G.rand(G.COUNTRIES.filter(x => s.routes[x.id]));
-  const far = Math.round(Math.hypot(c.x - G.HOME.x, c.y - G.HOME.y));
+  const now = G.CLIENTS.map((x, i) => i).filter(i => G.CLIENTS[i].t === tier), old = G.CLIENTS.map((x, i) => i).filter(i => G.CLIENTS[i].t < tier);
   let ci;
-  do { ci = Math.floor(Math.random() * G.CLIENTS.length); } while (s.mission && ci === s.mission.client);
+  do { ci = (!old.length || Math.random() < 0.7) ? G.rand(now) : G.rand(old); } while (s.mission && ci === s.mission.client);
   const cl = G.CLIENTS[ci];
-  let offer = 500 + s.day * 60 + far * 6 + c.cost * 0.3;
-  offer *= 1 + s.up.net * 0.1;
-  if (cl.weak) offer *= 0.4;                       // 약자는 가진 돈이 적다
+  let offer = G.TIER_PAY[cl.t] * (0.9 + Math.random() * 0.3) * (1 + s.up.net * 0.1);
+  if (cl.weak) offer *= 0.5;                       // 약자는 가진 돈이 적다
   s.mission = { client: ci, target: c.id, offer: Math.round(offer / 10) * 10, price: 0, tried: false, free: false, acc: 0, rerolled: !!(s.mission && s.mission.rerolled) };
 };
 
 // ── 작전: 오늘 밤 의뢰 ──
 G.screens.ops = () => {
   const s = G.s, night = s.phase === 'night', m = s.mission;
-  const head = `<div class="row head">${G.backBtn()}<span class="tag">핵 재고 ×${s.nukes}</span></div>`;
+  const head = `<div class="row head">${G.backBtn()}<span class="tag">${G.RANKS[G.opTier()]} · 핵 ×${s.nukes}</span></div>`;
   if (!night) return `<div class="ops">${head}<div class="plea"><div class="big">🌙</div><small>의뢰는 밤에 와요</small></div>
     <button class="cta in" onclick="G.go('armory')">🚀 무기고에서 핵 키우기</button></div>`;
   if (s.opDone) return `<div class="ops">${head}<div class="plea"><div class="big">✅</div><small>오늘 작전 끝</small></div>
@@ -25,7 +25,7 @@ G.screens.ops = () => {
   return `<div class="ops">${head}
     <div class="plea"><div class="bubble">${cl.plea}</div>${G.art.person(cl.color, cl.icon)}
       <small>${cl.name}${cl.weak ? '<span class="weak">약자</span>' : ''}</small></div>
-    <div class="mcard"><span class="big">${cl.enemy}</span><div><b>${cl.spot}</b><i>${c.icon} ${c.name}${cl.weak ? ' · ⭐+8 · 🚨 적게' : ''}</i></div><em>${G.fmt(m.offer)}</em></div>
+    <div class="mcard"><span class="big">${cl.main}</span><div><b>${cl.spot}</b><i>${c.icon} ${c.name}${cl.weak ? ' · ⭐+8 · 🚨 적게' : ''}</i></div><em>${G.fmt(m.offer)}</em></div>
     ${s.nukes > 0 ? `<button class="cta in" onclick="G.go('nego')">🤝 작전 시작</button>` : `<button class="cta in" onclick="G.go('armory')">🚀 핵이 없어요 → 무기고</button>`}
     ${m.rerolled ? '' : `<button class="reroll" onclick="G.reroll()">🔄 다른 의뢰 보기</button>`}
   </div>`;
@@ -81,7 +81,7 @@ let dropRaf = null, dropPos = 0;
 G.screens.drop = () => {
   const s = G.s, m = s.mission, cl = G.CLIENTS[m.client], zone = Math.min(60, 20 + s.up.range * 6);
   G.afterRender = () => {
-    G.crush.start($('crush'), { enemy: cl.enemy, big: 1 + s.up.power * 0.12, shroom: G.art.shroom(s.shroom) });
+    G.crush.start($('crush'), { enemy: cl.enemy, big: 1 + s.up.power * 0.12, shroom: G.art.shroom(s.shroom), main: cl.main, size: cl.size, bld: cl.bld, ppl: cl.ppl, tall: cl.tall, space: cl.space });
     const t0 = performance.now(), mark = $('mark');
     cancelAnimationFrame(dropRaf);
     const tick = t => {
@@ -93,7 +93,7 @@ G.screens.drop = () => {
     dropRaf = requestAnimationFrame(tick);
   };
   return `<div class="drop">
-    <div class="row head"><span class="tag">${cl.enemy} ${cl.spot}</span></div>
+    <div class="row head"><span class="tag">${cl.main} ${cl.spot}</span></div>
     <div class="air"><canvas id="crush"></canvas><div id="crushmsg" hidden></div></div>
     <div class="bar"><i class="zone" style="left:${50 - zone / 2}%;width:${zone}%"></i><u id="mark"></u></div>
     <button class="cta in" id="dropbtn" onclick="G.dropNow()">💣 투하!</button>
@@ -143,7 +143,9 @@ G.screens.pay = () => {
 G.collect = () => {
   const s = G.s, p = G.payout(), cl = G.CLIENTS[s.mission.client], fame = G.opFame();
   const heat = Math.round(G.HEAT_PER_OP * (1 - s.up.sign * 0.1) * (cl.weak ? 0.4 : 1));
+  const before = G.opTier();
   s.heat = Math.min(100, s.heat + heat); s.fame += fame; s.stats.ops++; s.opDone = true;
+  if (G.opTier() > before) setTimeout(() => G.toast('🎖 ' + G.RANKS[G.opTier()] + '(으)로 승급! 더 큰 의뢰가 와요'), 900);
   s.lastOp = { total: p.total, heat, fame };
   G.earn(p.total); G.save(); G.go('success'); G.snd.play('win');
 };

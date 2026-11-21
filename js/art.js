@@ -2,12 +2,13 @@
 G.art = {};
 
 // 주인공: 양갈래 머리 여자아이. night=true 면 밤 차림
+G.look = () => (G.s && G.s.look) || { dress: '#ff7a3d', hat: '', nuke: '#e9ecf5', sticker: '☢' };
 G.art.hero = night => `<svg viewBox="0 0 70 100" class="p hero-svg">
   <g stroke="#2b2b3a" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round">
     <path d="M14 26 L2 14" stroke-width="7" stroke="#3b2a4a"/><path d="M56 26 L68 14" stroke-width="7" stroke="#3b2a4a"/>
     <circle cx="13" cy="26" r="4" fill="${night ? '#b6ff3d' : '#ffd23d'}"/><circle cx="57" cy="26" r="4" fill="${night ? '#b6ff3d' : '#ffd23d'}"/>
     <rect x="27" y="80" width="6" height="16" fill="#fff"/><rect x="38" y="80" width="6" height="16" fill="#fff"/>
-    <path d="M20 84 L24 52 Q35 46 46 52 L50 84 Z" fill="${night ? '#23263a' : '#ff7a3d'}"/>
+    <path d="M20 84 L24 52 Q35 46 46 52 L50 84 Z" fill="${night ? '#23263a' : G.look().dress}"/>
     <circle cx="35" cy="30" r="19" fill="#ffe0c2"/>
     <path d="M16 30 Q16 10 35 10 Q54 10 54 30 Q46 18 35 20 Q24 18 16 30 Z" fill="#3b2a4a"/>
   </g>
@@ -15,6 +16,7 @@ G.art.hero = night => `<svg viewBox="0 0 70 100" class="p hero-svg">
     ? '<rect x="22" y="28" width="26" height="8" rx="3" fill="#111"/>'
     : '<circle cx="28" cy="32" r="2.4" fill="#2b2b3a"/><circle cx="42" cy="32" r="2.4" fill="#2b2b3a"/>'}
   <path d="M29 40 Q35 45 41 40" fill="none" stroke="#2b2b3a" stroke-width="2.2" stroke-linecap="round"/>
+  ${G.look().hat ? `<text x="35" y="17" text-anchor="middle" font-size="24">${G.look().hat}</text>` : ''}
 </svg>`;
 
 G.art.person = (color, face) => `<svg viewBox="0 0 60 100" class="p">
@@ -70,11 +72,11 @@ G.art.bomb = () => `<svg viewBox="0 0 180 240" class="bomb-svg">
     <circle cx="58" cy="230" r="9" fill="#222"/><circle cx="122" cy="230" r="9" fill="#222"/>
     <ellipse cx="90" cy="196" rx="62" ry="14" fill="#8a8fa8"/>
     <path d="M52 40 L46 10 L74 30 Z" fill="#b6ff3d"/><path d="M128 40 L134 10 L106 30 Z" fill="#b6ff3d"/>
-    <path d="M52 40 Q90 18 128 40 L140 150 Q134 192 90 194 Q46 192 40 150 Z" fill="#e9ecf5"/>
+    <path d="M52 40 Q90 18 128 40 L140 150 Q134 192 90 194 Q46 192 40 150 Z" fill="${G.look().nuke}"/>
     <path d="M47 82 H133" fill="none"/><path d="M43 120 H137" fill="none"/>
   </g>
   <circle cx="90" cy="152" r="22" fill="#ffd23d" stroke="#111522" stroke-width="4"/>
-  <text x="90" y="162" text-anchor="middle" font-size="28">☢</text>
+  <text x="90" y="162" text-anchor="middle" font-size="28">${G.look().sticker}</text>
 </svg>`;
 
 // 지어낸 세계 지도 바탕

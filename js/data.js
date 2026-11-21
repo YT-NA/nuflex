@@ -5,37 +5,52 @@ G.HOME = { x: 48, y: 54 };
 
 // 여행지 (모두 지어낸 나라). x·y 는 지도 위 자리(%)
 G.COUNTRIES = [
-  { id: 'coco',   name: '코코넛섬',   icon: '🏝', tag: '바다', x: 80, y: 72, cost: 0 },
-  { id: 'snow',   name: '스노알프',   icon: '🏔', tag: '눈',   x: 24, y: 17, cost: 300 },
-  { id: 'noodle', name: '누들리아',   icon: '🏙', tag: '미식', x: 17, y: 62, cost: 600 },
-  { id: 'sand',   name: '모래모래국', icon: '🏜', tag: '모험', x: 74, y: 28, cost: 1000 },
-  { id: 'jungle', name: '정글라',     icon: '🌴', tag: '탐험', x: 46, y: 86, cost: 1500 },
+  { pay: 80, fun: ['🏊','🤿','🍹','🏖'], id: 'coco',   name: '코코넛섬',   icon: '🏝', tag: '바다', x: 80, y: 72, cost: 0 },
+  { pay: 120, fun: ['⛷','☃️','🏂','🧣'], id: 'snow',   name: '스노알프',   icon: '🏔', tag: '눈',   x: 24, y: 17, cost: 300 },
+  { pay: 160, fun: ['🍜','🥟','🍢','🎆'], id: 'noodle', name: '누들리아',   icon: '🏙', tag: '미식', x: 17, y: 62, cost: 600 },
+  { pay: 220, fun: ['🐫','🏜','📸','🕶'], id: 'sand',   name: '모래모래국', icon: '🏜', tag: '모험', x: 74, y: 28, cost: 1000 },
+  { pay: 300, fun: ['🐒','🦜','🍌','🌺'], id: 'jungle', name: '정글라',     icon: '🌴', tag: '탐험', x: 46, y: 86, cost: 1500 },
 ];
 
-// 패키지에 넣는 것
-G.OPTIONS = [
-  { id: 'hotel',   name: '호텔',     icon: '🏨', price: 80, tag: '휴식' },
-  { id: 'snorkel', name: '스노클링', icon: '🤿', price: 50, tag: '물놀이' },
-  { id: 'guide',   name: '가이드',   icon: '🧭', price: 40, tag: '안내' },
-  { id: 'food',    name: '맛집',     icon: '🍜', price: 60, tag: '먹기' },
-  { id: 'ski',     name: '스키',     icon: '🎿', price: 70, tag: '운동' },
-  { id: 'spa',     name: '온천',     icon: '♨️', price: 50, tag: '휴식2' },
+// 손님 급 — 여행사 등급(lv)이 오를수록 단체·높은 사람이 온다. n=사람 수, mul=돈 배수
+G.GUESTS = [
+  { lv: 1, name: '손님',        icon: '',   n: 1,  mul: 1 },
+  { lv: 1, name: '대학생',      icon: '🧑‍🎓', n: 1,  mul: 1.2 },
+  { lv: 2, name: '가족 여행',   icon: '👨‍👩‍👧', n: 3,  mul: 2.5 },
+  { lv: 3, name: '단체 관광',   icon: '🧓', n: 8,  mul: 6 },
+  { lv: 4, name: '사장님',      icon: '🤵', n: 1,  mul: 9 },
+  { lv: 5, name: '국회의원',    icon: '🧑‍💼', n: 1,  mul: 15 },
+  { lv: 6, name: '효도 관광단', icon: '👵', n: 12, mul: 22 },
+  { lv: 7, name: '임금님',      icon: '🤴', n: 1,  mul: 45 },
+  { lv: 8, name: '외계 대사',   icon: '👽', n: 1,  mul: 90 },
 ];
-
-G.BASE_TRIP = 100;          // 여행 기본값(만)
 G.CUSTOMERS_PER_DAY = 3;
 G.CUSTOMER_COLORS = ['#4aa3ff', '#ff6b8b', '#38c172', '#b57bff', '#ffb02e', '#20c4c4'];
-G.CUSTOMER_NAMES = ['김 과장', '박 할머니', '신혼부부', '대학생', '이 사장', '최 선생'];
 
-// 밤 의뢰인 (모두 지어낸 것). weak=사회적 약자: 돈은 적지만 평판이 오르고 의심이 덜 오른다
+// 밤 의뢰 — 작전을 성공할수록 급(t)이 올라 표적이 커진다: 동네 → 마을 → 도시 → 명소 → 나라 → 행성
+// weak=사회적 약자(돈은 적지만 평판↑ 의심↓). main=가운데 큰 표적 그림, size=크기, bld=둘레 건물 수, ppl=사람 수, tall=건물 키
+// 명소·나라는 실제 이름 대신 빗댄 이름을 쓴다.
+G.RANKS = ['동네 해결사', '마을 해결사', '도시의 그림자', '세계의 손', '나라 지우개', '행성 파괴자'];
+G.TIER_AT = [0, 2, 5, 8, 12, 16];                       // 작전 성공 횟수
+G.TIER_PAY = [600, 1000, 2000, 5000, 12000, 35000];
 G.CLIENTS = [
-  { voice: 820, name: '동네 꼬마',   icon: '🧒', color: '#ffb02e', weak: true, plea: '형들이 맨날 때려요…',   spot: '일진 아지트',     enemy: '😈' },
-  { voice: 'bark', name: '멍멍이',      icon: '🐶', color: '#c9a070', weak: true, plea: '끼잉… 끼잉…',           spot: '학대범네 동네',   enemy: '👿' },
-  { voice: 520, name: '시장 아지매', icon: '👵', color: '#e06b8b', weak: true, plea: '더는 못 참겠어예…',     spot: '주정뱅이 골목',   enemy: '🤬' },
-  { voice: 620, name: '알바생',      icon: '🧑‍🍳', color: '#4aa3ff', weak: true, plea: '월급을 또 떼였어요…',   spot: '악덕 사장 빌딩',  enemy: '🤑' },
-  { voice: 190, name: '수염 장군',   icon: '🥸', color: '#6b7f4f', plea: '저 녀석들을 날려 주게.',   spot: '라이벌 비밀기지', enemy: '💀' },
-  { voice: 300, name: '선글라스 박사', icon: '😎', color: '#5a5f8a', plea: '실험이 필요하오.',       spot: '악당 연구소',     enemy: '🤖' },
-  { voice: 150, name: '망토 남작',   icon: '🧛', color: '#7a3d5c', plea: '후후… 부탁하지.',          spot: '괴수 둥지',       enemy: '👾' },
+  { t: 0, voice: 820,    name: '동네 꼬마',   icon: '🧒', color: '#ffb02e', weak: true, plea: '형들이 맨날 때려요…',       spot: '일진 아지트',        enemy: '😈', main: '🏚', size: 84,  bld: 2, ppl: 3, tall: 0.2 },
+  { t: 0, voice: 'bark', name: '멍멍이',      icon: '🐶', color: '#c9a070', weak: true, plea: '끼잉… 끼잉…',               spot: '못된 주인네 개집',   enemy: '👿', main: '🛖', size: 80,  bld: 1, ppl: 2, tall: 0.2 },
+  { t: 0, voice: 900,    name: '사탕가게 손녀', icon: '👧', color: '#ff8fc0', weak: true, plea: '옆 가게가 사탕을 훔쳐 가요!', spot: '도둑 캔디샵',        enemy: '🤥', main: '🍭', size: 84,  bld: 2, ppl: 2, tall: 0.25 },
+  { t: 0, voice: 560,    name: '옆집 아내',   icon: '👩', color: '#e06b8b', weak: true, plea: '저 차 안에서 바람을…!',     spot: '바람피우는 자동차',  enemy: '💋', main: '🚗', size: 92,  bld: 1, ppl: 2, tall: 0.2 },
+  { t: 1, voice: 520,    name: '시장 아지매', icon: '👵', color: '#e06b8b', weak: true, plea: '더는 못 참겠어예…',         spot: '주정뱅이 골목',      enemy: '🤬', main: '🍻', size: 76,  bld: 5, ppl: 5, tall: 0.45 },
+  { t: 1, voice: 620,    name: '알바생',      icon: '🧑‍🍳', color: '#4aa3ff', weak: true, plea: '월급을 또 떼였어요…',       spot: '악덕 사장 빌딩',     enemy: '🤑', main: '🏢', size: 110, bld: 4, ppl: 4, tall: 0.5 },
+  { t: 2, voice: 190,    name: '수염 장군',   icon: '🥸', color: '#6b7f4f', plea: '저 녀석들을 날려 주게.',     spot: '라이벌 비밀기지',    enemy: '💀', main: '🏭', size: 120, bld: 6, ppl: 6, tall: 0.75 },
+  { t: 2, voice: 300,    name: '선글라스 박사', icon: '😎', color: '#5a5f8a', plea: '실험이 필요하오.',         spot: '악당 연구소',        enemy: '🤖', main: '🏰', size: 120, bld: 6, ppl: 6, tall: 0.8 },
+  { t: 2, voice: 150,    name: '망토 남작',   icon: '🧛', color: '#7a3d5c', plea: '후후… 부탁하지.',            spot: '괴수 둥지',          enemy: '👾', main: '🌋', size: 130, bld: 4, ppl: 6, tall: 0.6 },
+  { t: 3, voice: 240,    name: '검은 양복',   icon: '🕴', color: '#23263a', plea: '각하께서 원하십니다.',       spot: '하얀 관저',          enemy: '🕶', main: '🏛', size: 160, bld: 4, ppl: 6, tall: 0.5 },
+  { t: 3, voice: 440,    name: '관광청장',    icon: '🎩', color: '#7a5cff', plea: '저 탑이 우리 탑보다 높소!',  spot: '세계에서 제일 큰 철탑', enemy: '🥖', main: '🗼', size: 170, bld: 4, ppl: 6, tall: 0.5 },
+  { t: 3, voice: 380,    name: '수집가',      icon: '🧐', color: '#2f9e8f', plea: '세상에 하나만 있어야 하오.', spot: '횃불 든 동상',       enemy: '🗿', main: '🗽', size: 170, bld: 4, ppl: 6, tall: 0.5 },
+  { t: 4, voice: 170,    name: '독재자',      icon: '🫅', color: '#8a2d2d', plea: '저 나라가 눈에 거슬린다.',   spot: '이웃 나라 수도',     enemy: '💂', main: '🏙', size: 130, bld: 12, ppl: 9, tall: 1 },
+  { t: 4, voice: 210,    name: '총통',        icon: '👨‍✈️', color: '#4f6b3a', plea: '지도에서 지워 주게.',        spot: '모래모래국 통째로',  enemy: '🐫', main: '🕌', size: 140, bld: 12, ppl: 9, tall: 0.9 },
+  { t: 5, voice: 1100,   name: '외계 황제',   icon: '👽', color: '#38c172', plea: '삐리릭. 저 달이 눈부시다.',  spot: '달',                 enemy: '👾', main: '🌕', size: 190, bld: 0, ppl: 0, space: true },
+  { t: 5, voice: 700,    name: '은하 상인',   icon: '🛸', color: '#8fb6ff', plea: '저 고리, 장사에 방해된다.',  spot: '고리 달린 행성',     enemy: '👾', main: '🪐', size: 200, bld: 0, ppl: 0, space: true },
+  { t: 5, voice: 120,    name: '로봇 대왕',   icon: '🤖', color: '#8a8fa8', plea: '삑. 저 별똥별을 부숴라.',    spot: '거대 혜성',          enemy: '👾', main: '☄️', size: 190, bld: 0, ppl: 0, space: true },
 ];
 
 // 연구(강화) — 값은 단계마다 ×1.5
@@ -71,7 +86,7 @@ G.FAIL_UNDER = 0.3;        // 박살 낸 비율이 이보다 낮으면 작전 �
 G.SHOP = [
   { id: 'gem30',  icon: '💎', name: '보석 30',   won: '₩1,200', gem: 30 },
   { id: 'gem100', icon: '💎', name: '보석 100',  won: '₩3,900', gem: 100 },
-  { id: 'sec',    icon: '🤖', name: '상담 비서', won: '₩3,300', flag: 'secretary', note: '자동 추천 무제한' },
+  { id: 'sec',    icon: '🤖', name: '상담 비서', won: '₩3,300', flag: 'secretary', note: '자동 발사 무제한' },
   { id: 'noad',   icon: '🚫', name: '광고 제거', won: '₩5,500', flag: 'noad' },
   { id: 'month',  icon: '📅', name: '월정액',    won: '₩4,900', flag: 'month', gem: 10 },
 ];
@@ -99,3 +114,24 @@ G.SHROOMS = [
   { id: 'agaric',   name: '광대버섯', gem: 10 },
   { id: 'morel',    name: '곰보버섯', gem: 15 },
 ];
+
+// 꾸미기 — 삐삐(옷·모자)와 핵(색·스티커). cost=돈(만), gem=보석
+G.LOOKS = [
+  { kind: 'dress',   val: '#ff7a3d', name: '주황' },
+  { kind: 'dress',   val: '#4aa3ff', name: '하늘', cost: 200 },
+  { kind: 'dress',   val: '#ff6b9d', name: '분홍', cost: 200 },
+  { kind: 'dress',   val: '#ffd23d', name: '황금', gem: 5 },
+  { kind: 'hat',     val: '',   name: '없음' },
+  { kind: 'hat',     val: '👒', name: '밀짚모자', cost: 300 },
+  { kind: 'hat',     val: '🎩', name: '신사모', cost: 600 },
+  { kind: 'hat',     val: '👑', name: '왕관', gem: 10 },
+  { kind: 'nuke',    val: '#e9ecf5', name: '흰색' },
+  { kind: 'nuke',    val: '#ffb3d1', name: '분홍', cost: 300 },
+  { kind: 'nuke',    val: '#565c7c', name: '강철', cost: 600 },
+  { kind: 'nuke',    val: '#ffd23d', name: '황금', gem: 10 },
+  { kind: 'sticker', val: '☢',  name: '방사능' },
+  { kind: 'sticker', val: '💖', name: '하트', cost: 200 },
+  { kind: 'sticker', val: '💀', name: '해골', cost: 400 },
+  { kind: 'sticker', val: '🌈', name: '무지개', gem: 5 },
+];
+G.LOOK_KINDS = [['dress', '👗 삐삐 옷'], ['hat', '🎩 삐삐 모자'], ['nuke', '🎨 핵 색'], ['sticker', '⭐ 핵 스티커']];

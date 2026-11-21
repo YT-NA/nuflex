@@ -3,7 +3,7 @@ G.newState = () => ({
   v: 1, t: 0, day: 1, phase: 'day',
   money: 300, gem: 5, fame: 0, heat: 10,
   routes: { coco: true }, nukes: 1,
-  up: { talk: 0, truck: 0, sign: 0, power: 0, range: 0, expand: 0, net: 0 }, decor: {}, shroom: 'button', shrooms: { button: true, fire: true },
+  up: { talk: 0, truck: 0, sign: 0, power: 0, range: 0, expand: 0, net: 0 }, decor: {}, look: { dress: '#ff7a3d', hat: '', nuke: '#e9ecf5', sticker: '☢' }, own: {}, shroom: 'button', shrooms: { button: true, fire: true },
   left: G.CUSTOMERS_PER_DAY, cust: null, pick: { dest: null, opts: [] },
   mission: null, opDone: false,
   attendDay: 0, adDay: 0, flags: {},
@@ -32,6 +32,9 @@ G.load = async () => {
   G.s = Object.assign(G.newState(), best || {});
   G.s.up = Object.assign(fresh.up, G.s.up);
   G.s.decor = G.s.decor || {};
+  G.s.look = Object.assign(fresh.look, G.s.look); G.s.own = G.s.own || {};
+  if (G.s.cust && G.s.cust.g == null) G.s.cust = null;                       // 예전 저장의 손님은 버린다
+  if (G.s.mission && !G.CLIENTS[G.s.mission.client]) G.s.mission.client = 0;
   G.s.shroom = G.s.shroom || 'button'; G.s.shrooms = Object.assign({ button: true, fire: true }, G.s.shrooms);
   if (G.s.mission && !G.CLIENTS[G.s.mission.client]) G.s.mission.client = 0;
 };

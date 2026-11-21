@@ -6,7 +6,7 @@ G.fmt = n => Math.round(n).toLocaleString('ko-KR') + '만';
 G.rand = arr => arr[Math.floor(Math.random() * arr.length)];
 G.country = id => G.COUNTRIES.find(c => c.id === id);
 
-const FLOW = ['nego', 'drop', 'pay', 'success', 'fail'];   // 작전 중 화면 (뒤로·탭 막음)
+const FLOW = ['nego', 'drop', 'pay', 'success', 'fail', 'launch'];   // 작전 중 화면 (뒤로·탭 막음)
 
 G.go = name => {
   if (name !== G.screen) history.pushState({ s: name }, '');
@@ -24,7 +24,7 @@ window.addEventListener('popstate', () => {
 G.render = () => {
   const s = G.s, night = s.phase === 'night';
   document.body.classList.toggle('night', night);
-  G.snd.bgm(night ? 'night' : 'day'); G.snd.quiet(G.screen === 'drop');
+  G.snd.bgm(['nego', 'drop'].includes(G.screen) ? 'ops' : night ? 'night' : 'day');   // 배경음 3곡: 낮·밤·작전
   $('top').innerHTML = `
     <span class="chip day">${s.day}일 ${night ? '🌙' : '☀️'}</span>
     <span class="chip">💰<b id="money">${G.fmt(s.money)}</b></span>

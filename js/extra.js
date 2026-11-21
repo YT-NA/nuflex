@@ -24,6 +24,7 @@ G.resSide = null;
 G.setSide = side => { G.resSide = side; G.render(); };
 G.screens.research = () => {
   const s = G.s, side = G.resSide || (s.phase === 'night' ? 'night' : 'day');
+  if (side === 'look') return G.lookScreen();
   const rows = G.UPGRADES.filter(u => u.side === side).map(u => {
     const lv = s.up[u.id], full = u.max && lv >= u.max;
     return full ? `<div class="uprow"><span class="ic">${u.icon}</span><div><b>${u.name}</b><i>Lv.${lv} · 끝</i></div><button class="off">최고</button></div>`
@@ -34,7 +35,7 @@ G.screens.research = () => {
     : `<button class="deco ${s.money >= x.cost ? '' : 'off'}" onclick="G.buyDecor('${x.id}')"><span>${x.icon}</span><b>${G.fmt(x.cost)}</b><i>${x.effect}</i></button>`).join('')}</div>`;
   return `<div class="research">
     <div class="row head">${G.backBtn()}<span class="tag">연구소</span></div>
-    <div class="seg"><button class="${side === 'day' ? 'on' : ''}" onclick="G.setSide('day')">☀️ 여행사</button><button class="${side === 'night' ? 'on' : ''}" onclick="G.setSide('night')">🌙 무기 사업</button></div>
+    ${G.segHtml(side)}
     ${rows}${decor}
     ${side === 'night' ? `<button class="reroll" onclick="G.go('armory')">🚀 핵은 무기고에서 키워요</button>` : ''}
   </div>`;
@@ -86,7 +87,7 @@ G.buy = id => {
   if (p.flag && s.flags[p.flag]) return;
   if (p.flag) s.flags[p.flag] = true;
   if (p.gem) s.gem += p.gem;
-  if (p.flag === 'secretary' && s.cust) G.autoPick();
+
   G.save(); G.render(); G.side('shop');
   G.toast('시험판: 결제 없이 지급했어요');
 };
@@ -115,4 +116,34 @@ G.pickShroom = id => {
     s.shrooms[id] = true;
   }
   s.shroom = id; G.save(); G.render(); G.shroomSheet();
+};
+
+// ── 연구소 칸 나누기 ──
+G.segHtml = side => `<div class="seg">${[['day', '☀️ 여행사'], ['night', '🌙 무기'], ['look', '🎀 꾸미기']].map(([id, nm]) =>
+  `<button class="${side === id ? 'on' : ''}" onclick="G.setSide('${id}')">${nm}</button>`).join('')}</div>`;
+
+// ── 꾸미기: 삐삐와 핵 ──
+G.lookId = x => x.kind + ':' + x.val;
+G.lookScreen = () => {
+  const s = G.s;
+  const rows = G.LOOK_KINDS.map(([kind, title]) => `<h4 class="sec">${title}</h4><div class="looks">${G.LOOKS.filter(x => x.kind === kind).map(x => {
+    const free = !x.cost && !x.gem, have = free || s.own[G.lookId(x)], on = s.look[kind] === x.val;
+    const sw = x.val.startsWith('#') ? `<span class="sw" style="background:${x.val}"></span>` : `<span class="em">${x.val || '🚫'}</span>`;
+    return `<button class="look ${on ? 'on' : ''}" onclick="G.pickLook('${kind}','${x.val}')">${sw}<i>${on ? '✔' : have ? x.name : x.gem ? '💎' + x.gem : G.fmt(x.cost)}</i></button>`;
+  }).join('')}</div>`).join('');
+  return `<div class="research">
+    <div class="row head">${G.backBtn()}<span class="tag">연구소</span></div>
+    ${G.segHtml('look')}
+    <div class="preview"><div class="pv-hero">${G.art.hero(false)}</div><div class="pv-bomb">${G.art.bomb()}</div></div>
+    ${rows}
+  </div>`;
+};
+G.pickLook = (kind, val) => {
+  const s = G.s, x = G.LOOKS.find(k => k.kind === kind && k.val === val), id = G.lookId(x);
+  if ((x.cost || x.gem) && !s.own[id]) {
+    if (x.gem) { if (s.gem < x.gem) return G.toast('💎 보석이 모자라요'); s.gem -= x.gem; G.snd.play('buy'); }
+    else { if (s.money < x.cost) return G.toast('돈이 모자라요'); G.earn(-x.cost); }
+    s.own[id] = true;
+  }
+  s.look[kind] = val; G.save(); G.render();
 };
